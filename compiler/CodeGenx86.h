@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-class CodeGen {
+class CodeGenx86 {
     public: 
         void gen_asm_prolog();
         void gen_asm_epilog();
@@ -12,4 +12,6 @@ class CodeGen {
         void gen_asm_add_const(int add, int index);
         void gen_asm_sub_const(int sub, int index);
         void gen_asm_neg(int index);
+        void gen_asm_init();
+        void gen_asm_end();
 };

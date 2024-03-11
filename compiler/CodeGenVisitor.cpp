@@ -2,12 +2,13 @@
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 {
-    std::cout << ".globl main\n";
-    std::cout << " main: \n";
-    cg.gen_asm_prolog();
-    this->visitChildren(ctx);
-    cg.gen_asm_epilog();
-    std::cout << "\tret\n";
+    if(targetArchitecture=="x86"){
+        cgx86.gen_asm_init();
+        this->visitChildren(ctx);
+        cgx86.gen_asm_end();
+    }else if(targetArchitecture=="arm"){
+        //TODO: AJOUTER GEN ARM
+    }
     return 0;
 }
 
@@ -112,17 +113,29 @@ antlrcpp::Any CodeGenVisitor::visitUnaryExpression(ifccParser::UnaryExpressionCo
     auto primary_expression = visitPrimaryExpression(ctx->primaryExpression());
     if (ctx->INCREMENT() != nullptr)
     {
-        cg.gen_asm_add_const(1, symbols[primary_expression]);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_add_const(1, symbols[primary_expression]);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
         symbols_value[primary_expression] = symbols_value[primary_expression] + 1;
     }
     else if (ctx->DECREMENT() != nullptr)
     {
-        cg.gen_asm_sub_const(1, symbols[primary_expression]);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_sub_const(1, symbols[primary_expression]);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
         symbols_value[primary_expression] = symbols_value[primary_expression] - 1;
     }
     else if (ctx->MINUS() != nullptr)
     {
-        cg.gen_asm_neg(symbols[primary_expression]);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_neg(symbols[primary_expression]);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
         symbols_value[primary_expression] = -symbols_value[primary_expression];
     }
     return primary_expression;
@@ -152,12 +165,20 @@ antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *c
     if (symbols.find(affected) != symbols.end())
     {
         symbols_value[variable] = symbols_value[affected];
-        cg.gen_asm_aff_var(symbols[affected], symbols[variable]);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_aff_var(symbols[affected], symbols[variable]);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
     }
     else
     {
         symbols_value[variable] = std::stoi(affected);
-        cg.gen_asm_aff_const(affected, symbols[variable]);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_aff_const(affected, symbols[variable]);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
     }
     return nullptr;
 }
@@ -167,11 +188,19 @@ antlrcpp::Any CodeGenVisitor::visitReturn_stmt(ifccParser::Return_stmtContext *c
     std::string returned = visitExpression((ctx->expression())).as<std::string>();
     if (symbols.find(returned) == symbols.end())
     {
-        cg.gen_asm_return_const(returned);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_return_const(returned);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
     }
     else
     {
-        cg.gen_asm_return_var(symbols[returned]);
+        if(targetArchitecture=="x86"){
+            cgx86.gen_asm_return_var(symbols[returned]);
+        }else if(targetArchitecture=="arm"){
+            //TODO: AJOUTER GEN ARM
+        }
     }
     return nullptr;
 }
@@ -190,4 +219,8 @@ antlrcpp::Any CodeGenVisitor::visitDeclaration(ifccParser::DeclarationContext *c
 void CodeGenVisitor::setSymbols(std::map<std::string, int> symbols)
 {
     this->symbols = symbols;
+}
+
+void CodeGenVisitor::setTargetArchitecture(const std::string &architecture) {
+    targetArchitecture = architecture;
 }
