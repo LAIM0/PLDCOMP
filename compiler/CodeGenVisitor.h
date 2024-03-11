@@ -3,7 +3,7 @@
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
 #include "VariableVisitor.h"
-#include "CodeGen.h"
+#include "CodeGenx86.h"
 
 class CodeGenVisitor : public ifccBaseVisitor
 {
@@ -18,10 +18,13 @@ public:
         virtual antlrcpp::Any visitUnaryExpression(ifccParser::UnaryExpressionContext *ctx) override;
         virtual antlrcpp::Any visitPrimaryExpression(ifccParser::PrimaryExpressionContext *ctx) override;
         void setSymbols(std::map<std::string, int> symbols);
+        void setTargetArchitecture(const std::string& architecture); // Méthode pour définir l'architecture cible
+
 
 private:
-        CodeGen cg;
+        CodeGenx86 cgx86;
         std::map<std::string, int> symbols;
         std::map<std::string, int> symbols_value;
+        std::string targetArchitecture; // Architecture cible
         VariableVisitor variableVisitor;
 };
