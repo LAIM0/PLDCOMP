@@ -20,7 +20,8 @@ OBJECTS=build/ifccBaseVisitor.o \
 	build/main.o \
 	build/CodeGenVisitor.o \
 	build/VariableVisitor.o \
-	build/CodeGen.o
+	build/CodeGenArm.o \
+	build/CodeGenx86.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build

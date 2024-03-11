@@ -31,3 +31,6 @@
 *.mk
 /antlr/lib/
 /compiler/.antlr/
+
+.DS_Store
+workspace.xml
