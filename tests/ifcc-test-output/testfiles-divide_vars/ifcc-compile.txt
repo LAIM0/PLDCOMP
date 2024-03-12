@@ -1,0 +1,4 @@
+line 5:14 mismatched input '/' expecting ';'
+error: syntax error during parsing
+
+exit status: 1

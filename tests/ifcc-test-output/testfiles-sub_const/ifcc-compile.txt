@@ -1,0 +1,4 @@
+line 2:14 missing ';' at '-'
+error: syntax error during parsing
+
+exit status: 1

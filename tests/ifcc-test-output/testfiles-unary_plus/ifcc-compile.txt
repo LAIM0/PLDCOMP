@@ -1,0 +1,4 @@
+line 3:8 extraneous input '+' expecting {'(', NUMBER, CHAR, VAR}
+error: syntax error during parsing
+
+exit status: 1

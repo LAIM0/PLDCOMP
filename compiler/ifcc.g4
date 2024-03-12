@@ -30,7 +30,11 @@ relationalExpression: bitshiftExpression relationalOperation*;
 relationalOperation: (LESSEQUAL | LESS | GREATEREQUAL | GREATER) bitshiftExpression;
 
 bitshiftExpression: addExpression bitshiftOperation*;
+<<<<<<< HEAD
 bitshiftOperation: (SHIFTLEFT | SHIFTRIGHT) addExpression;
+=======
+bitshiftOperation: (LEFTSHIFT | RIGHTSHIFT) addExpression;
+>>>>>>> chore: chchanging grammar - not completed
 
 addExpression: multExpression addOperation*;
 addOperation: (PLUS | MINUS) multExpression;
@@ -75,8 +79,13 @@ statement:
 
 constante: NUMBER | CHAR;
 
+<<<<<<< HEAD
 SHIFTRIGHT: '>>';
 SHIFTLEFT: '<<';
+=======
+RIGHTSHIFT: '>>';
+LEFTSHIFT: '<<';
+>>>>>>> chore: chchanging grammar - not completed
 MULTIPLY: '*';
 DIVIDE: '/';
 MOD: '%';

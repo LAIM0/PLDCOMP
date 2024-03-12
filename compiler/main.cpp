@@ -74,9 +74,9 @@ int main(int argc, const char **argv)
 
   std::map<std::string, int> symbols;
 
-  VariableVisitor variableVisitor;
-  variableVisitor.visit(tree);
-  symbols = variableVisitor.getSymbols();
+  // VariableVisitor variableVisitor;
+  // variableVisitor.visit(tree);
+  // symbols = variableVisitor.getSymbols();
 
   CodeGenVisitor v;
   v.setSymbols(symbols);
