@@ -18,7 +18,7 @@ public:
     LESSEQUAL = 20, LESS = 21, GREATEREQUAL = 22, GREATER = 23, NOTEQUAL = 24, 
     EQUAL = 25, BAND = 26, BXOR = 27, BOR = 28, AND = 29, OR = 30, EGAL = 31, 
     NOT = 32, BNOT = 33, RETURN = 34, TYPE = 35, NUMBER = 36, CHAR = 37, 
-    COMMENT = 38, DIRECTIVE = 39, WS = 40, VAR = 41, MULT = 42
+    COMMENT = 38, DIRECTIVE = 39, WS = 40, VAR = 41
   };
 
   enum {
@@ -300,7 +300,7 @@ public:
   public:
     MultOperatorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *MULT();
+    antlr4::tree::TerminalNode *MULTIPLY();
     antlr4::tree::TerminalNode *DIVIDE();
     antlr4::tree::TerminalNode *MOD();
 

@@ -5,6 +5,8 @@
 #include "Instr_return.h"
 #include "Instr_minus.h"
 #include "Instr_add.h"
+#include "Instr_sub.h"
+#include "Instr_mult.h"
 #include "Instr_ldconst.h"
 #include "Instr_copy.h"
 #include "Type.h"
@@ -21,8 +23,9 @@ public:
     virtual antlrcpp::Any visitVar(ifccParser::VarContext * ctx) override;
     virtual antlrcpp::Any visitReturn_stmt(ifccParser::Return_stmtContext *ctx) override;
     virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override;
-    virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext * ctx) override;
+    virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override;
     virtual antlrcpp::Any visitAdd(ifccParser::AddContext * ctx) override;
+    virtual antlrcpp::Any visitMult(ifccParser::MultContext * ctx) override;
     void setSymbols(std::map<std::string, int> symbols);
 
 

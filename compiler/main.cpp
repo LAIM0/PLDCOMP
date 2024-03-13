@@ -76,15 +76,9 @@ int main(int argc, const char **argv)
 
   std::map<std::string, int> symbols;
 
-  VariableVisitor variableVisitor;
-  variableVisitor.visit(tree);
-  symbols = variableVisitor.getSymbols();
 
-//   CodeGenVisitor v;
-//   v.setSymbols(symbols);
 
     CFGVisitor cfg;
-    cfg.setSymbols(symbols);
     cfg.visit(tree);
   // Passer l'architecture cible au visiteur
 //   v.setTargetArchitecture(target_architecture);

@@ -26,7 +26,7 @@ expression : expression multOperator expression # mult
 equalityOperator : EQUAL | NOTEQUAL;
 relationalOperator : LESSEQUAL | LESS | GREATEREQUAL | GREATER;
 bitShiftOperator : LEFTSHIFT | RIGHTSHIFT;
-multOperator : MULT | DIVIDE | MOD;
+multOperator : MULTIPLY | DIVIDE | MOD;
 addOperator : PLUS | MINUS;
 unaryOperator : INCREMENT | DECREMENT | PLUS | MINUS | NOT;
 

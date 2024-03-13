@@ -32,7 +32,9 @@ OBJECTS=build/ifccBaseVisitor.o \
 	build/Instr_minus.o \
 	build/Instr_not.o \
 	build/Instr_add.o \
-	build/Instr_ldconst.o 
+	build/Instr_ldconst.o \
+	build/Instr_sub.o \
+	build/Instr_mult.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
