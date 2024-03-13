@@ -37,235 +37,245 @@ public interface ifccListener extends ParseTreeListener {
 	 */
 	void exitBloc(ifccParser.BlocContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#expression}.
+	 * Enter a parse tree produced by the {@code par}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(ifccParser.ExpressionContext ctx);
+	void enterPar(ifccParser.ParContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#expression}.
+	 * Exit a parse tree produced by the {@code par}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(ifccParser.ExpressionContext ctx);
+	void exitPar(ifccParser.ParContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#orExpression}.
+	 * Enter a parse tree produced by the {@code add}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterOrExpression(ifccParser.OrExpressionContext ctx);
+	void enterAdd(ifccParser.AddContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#orExpression}.
+	 * Exit a parse tree produced by the {@code add}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitOrExpression(ifccParser.OrExpressionContext ctx);
+	void exitAdd(ifccParser.AddContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#orOperation}.
+	 * Enter a parse tree produced by the {@code mult}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterOrOperation(ifccParser.OrOperationContext ctx);
+	void enterMult(ifccParser.MultContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#orOperation}.
+	 * Exit a parse tree produced by the {@code mult}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitOrOperation(ifccParser.OrOperationContext ctx);
+	void exitMult(ifccParser.MultContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#andExpression}.
+	 * Enter a parse tree produced by the {@code or}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterAndExpression(ifccParser.AndExpressionContext ctx);
+	void enterOr(ifccParser.OrContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#andExpression}.
+	 * Exit a parse tree produced by the {@code or}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitAndExpression(ifccParser.AndExpressionContext ctx);
+	void exitOr(ifccParser.OrContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#andOperation}.
+	 * Enter a parse tree produced by the {@code const}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterAndOperation(ifccParser.AndOperationContext ctx);
+	void enterConst(ifccParser.ConstContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#andOperation}.
+	 * Exit a parse tree produced by the {@code const}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitAndOperation(ifccParser.AndOperationContext ctx);
+	void exitConst(ifccParser.ConstContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#borExpression}.
+	 * Enter a parse tree produced by the {@code bor}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBorExpression(ifccParser.BorExpressionContext ctx);
+	void enterBor(ifccParser.BorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#borExpression}.
+	 * Exit a parse tree produced by the {@code bor}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBorExpression(ifccParser.BorExpressionContext ctx);
+	void exitBor(ifccParser.BorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#borOperation}.
+	 * Enter a parse tree produced by the {@code var}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBorOperation(ifccParser.BorOperationContext ctx);
+	void enterVar(ifccParser.VarContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#borOperation}.
+	 * Exit a parse tree produced by the {@code var}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBorOperation(ifccParser.BorOperationContext ctx);
+	void exitVar(ifccParser.VarContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#bxorExpression}.
+	 * Enter a parse tree produced by the {@code unary}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBxorExpression(ifccParser.BxorExpressionContext ctx);
+	void enterUnary(ifccParser.UnaryContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#bxorExpression}.
+	 * Exit a parse tree produced by the {@code unary}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBxorExpression(ifccParser.BxorExpressionContext ctx);
+	void exitUnary(ifccParser.UnaryContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#bxorOperation}.
+	 * Enter a parse tree produced by the {@code bitshift}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBxorOperation(ifccParser.BxorOperationContext ctx);
+	void enterBitshift(ifccParser.BitshiftContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#bxorOperation}.
+	 * Exit a parse tree produced by the {@code bitshift}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBxorOperation(ifccParser.BxorOperationContext ctx);
+	void exitBitshift(ifccParser.BitshiftContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#bandExpression}.
+	 * Enter a parse tree produced by the {@code func_call}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBandExpression(ifccParser.BandExpressionContext ctx);
+	void enterFunc_call(ifccParser.Func_callContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#bandExpression}.
+	 * Exit a parse tree produced by the {@code func_call}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBandExpression(ifccParser.BandExpressionContext ctx);
+	void exitFunc_call(ifccParser.Func_callContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#bandOperation}.
+	 * Enter a parse tree produced by the {@code and}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBandOperation(ifccParser.BandOperationContext ctx);
+	void enterAnd(ifccParser.AndContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#bandOperation}.
+	 * Exit a parse tree produced by the {@code and}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBandOperation(ifccParser.BandOperationContext ctx);
+	void exitAnd(ifccParser.AndContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#equalExpression}.
+	 * Enter a parse tree produced by the {@code bxor}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterEqualExpression(ifccParser.EqualExpressionContext ctx);
+	void enterBxor(ifccParser.BxorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#equalExpression}.
+	 * Exit a parse tree produced by the {@code bxor}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitEqualExpression(ifccParser.EqualExpressionContext ctx);
+	void exitBxor(ifccParser.BxorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#equalOperation}.
+	 * Enter a parse tree produced by the {@code relational}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterEqualOperation(ifccParser.EqualOperationContext ctx);
+	void enterRelational(ifccParser.RelationalContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#equalOperation}.
+	 * Exit a parse tree produced by the {@code relational}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitEqualOperation(ifccParser.EqualOperationContext ctx);
+	void exitRelational(ifccParser.RelationalContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#relationalExpression}.
+	 * Enter a parse tree produced by the {@code band}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterRelationalExpression(ifccParser.RelationalExpressionContext ctx);
+	void enterBand(ifccParser.BandContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#relationalExpression}.
+	 * Exit a parse tree produced by the {@code band}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitRelationalExpression(ifccParser.RelationalExpressionContext ctx);
+	void exitBand(ifccParser.BandContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#relationalOperation}.
+	 * Enter a parse tree produced by the {@code equality}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterRelationalOperation(ifccParser.RelationalOperationContext ctx);
+	void enterEquality(ifccParser.EqualityContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#relationalOperation}.
+	 * Exit a parse tree produced by the {@code equality}
+	 * labeled alternative in {@link ifccParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitRelationalOperation(ifccParser.RelationalOperationContext ctx);
+	void exitEquality(ifccParser.EqualityContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#bitshiftExpression}.
+	 * Enter a parse tree produced by {@link ifccParser#equalityOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterBitshiftExpression(ifccParser.BitshiftExpressionContext ctx);
+	void enterEqualityOperator(ifccParser.EqualityOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#bitshiftExpression}.
+	 * Exit a parse tree produced by {@link ifccParser#equalityOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitBitshiftExpression(ifccParser.BitshiftExpressionContext ctx);
+	void exitEqualityOperator(ifccParser.EqualityOperatorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#bitshiftOperation}.
+	 * Enter a parse tree produced by {@link ifccParser#relationalOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterBitshiftOperation(ifccParser.BitshiftOperationContext ctx);
+	void enterRelationalOperator(ifccParser.RelationalOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#bitshiftOperation}.
+	 * Exit a parse tree produced by {@link ifccParser#relationalOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitBitshiftOperation(ifccParser.BitshiftOperationContext ctx);
+	void exitRelationalOperator(ifccParser.RelationalOperatorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#addExpression}.
+	 * Enter a parse tree produced by {@link ifccParser#bitShiftOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterAddExpression(ifccParser.AddExpressionContext ctx);
+	void enterBitShiftOperator(ifccParser.BitShiftOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#addExpression}.
+	 * Exit a parse tree produced by {@link ifccParser#bitShiftOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitAddExpression(ifccParser.AddExpressionContext ctx);
+	void exitBitShiftOperator(ifccParser.BitShiftOperatorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#addOperation}.
+	 * Enter a parse tree produced by {@link ifccParser#multOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterAddOperation(ifccParser.AddOperationContext ctx);
+	void enterMultOperator(ifccParser.MultOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#addOperation}.
+	 * Exit a parse tree produced by {@link ifccParser#multOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitAddOperation(ifccParser.AddOperationContext ctx);
+	void exitMultOperator(ifccParser.MultOperatorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#multExpression}.
+	 * Enter a parse tree produced by {@link ifccParser#addOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterMultExpression(ifccParser.MultExpressionContext ctx);
+	void enterAddOperator(ifccParser.AddOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#multExpression}.
+	 * Exit a parse tree produced by {@link ifccParser#addOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitMultExpression(ifccParser.MultExpressionContext ctx);
+	void exitAddOperator(ifccParser.AddOperatorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#multOperation}.
+	 * Enter a parse tree produced by {@link ifccParser#unaryOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterMultOperation(ifccParser.MultOperationContext ctx);
+	void enterUnaryOperator(ifccParser.UnaryOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#multOperation}.
+	 * Exit a parse tree produced by {@link ifccParser#unaryOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitMultOperation(ifccParser.MultOperationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ifccParser#unaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterUnaryExpression(ifccParser.UnaryExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ifccParser#unaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitUnaryExpression(ifccParser.UnaryExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ifccParser#primaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterPrimaryExpression(ifccParser.PrimaryExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ifccParser#primaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitPrimaryExpression(ifccParser.PrimaryExpressionContext ctx);
+	void exitUnaryOperator(ifccParser.UnaryOperatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ifccParser#condition_bloc}.
 	 * @param ctx the parse tree
@@ -286,16 +296,6 @@ public interface ifccListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLoop_bloc(ifccParser.Loop_blocContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ifccParser#return_stmt}.
-	 * @param ctx the parse tree
-	 */
-	void enterReturn_stmt(ifccParser.Return_stmtContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ifccParser#return_stmt}.
-	 * @param ctx the parse tree
-	 */
-	void exitReturn_stmt(ifccParser.Return_stmtContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ifccParser#function_call}.
 	 * @param ctx the parse tree
@@ -347,15 +347,89 @@ public interface ifccListener extends ParseTreeListener {
 	 */
 	void exitFunction_declaration(ifccParser.Function_declarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ifccParser#statement}.
+	 * Enter a parse tree produced by the {@code return_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement(ifccParser.StatementContext ctx);
+	void enterReturn_stmt(ifccParser.Return_stmtContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ifccParser#statement}.
+	 * Exit a parse tree produced by the {@code return_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement(ifccParser.StatementContext ctx);
+	void exitReturn_stmt(ifccParser.Return_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declaration_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaration_stmt(ifccParser.Declaration_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declaration_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaration_stmt(ifccParser.Declaration_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code affectation_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterAffectation_stmt(ifccParser.Affectation_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code affectation_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitAffectation_stmt(ifccParser.Affectation_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code unary_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnary_stmt(ifccParser.Unary_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code unary_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnary_stmt(ifccParser.Unary_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code func_call_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunc_call_stmt(ifccParser.Func_call_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code func_call_stmt}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunc_call_stmt(ifccParser.Func_call_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code condition}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterCondition(ifccParser.ConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code condition}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitCondition(ifccParser.ConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code loop}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterLoop(ifccParser.LoopContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code loop}
+	 * labeled alternative in {@link ifccParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitLoop(ifccParser.LoopContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ifccParser#constante}.
 	 * @param ctx the parse tree

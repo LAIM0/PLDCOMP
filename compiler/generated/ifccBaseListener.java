@@ -51,277 +51,253 @@ public class ifccBaseListener implements ifccListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression(ifccParser.ExpressionContext ctx) { }
+	@Override public void enterPar(ifccParser.ParContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpression(ifccParser.ExpressionContext ctx) { }
+	@Override public void exitPar(ifccParser.ParContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOrExpression(ifccParser.OrExpressionContext ctx) { }
+	@Override public void enterAdd(ifccParser.AddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOrExpression(ifccParser.OrExpressionContext ctx) { }
+	@Override public void exitAdd(ifccParser.AddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOrOperation(ifccParser.OrOperationContext ctx) { }
+	@Override public void enterMult(ifccParser.MultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOrOperation(ifccParser.OrOperationContext ctx) { }
+	@Override public void exitMult(ifccParser.MultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAndExpression(ifccParser.AndExpressionContext ctx) { }
+	@Override public void enterOr(ifccParser.OrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAndExpression(ifccParser.AndExpressionContext ctx) { }
+	@Override public void exitOr(ifccParser.OrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAndOperation(ifccParser.AndOperationContext ctx) { }
+	@Override public void enterConst(ifccParser.ConstContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAndOperation(ifccParser.AndOperationContext ctx) { }
+	@Override public void exitConst(ifccParser.ConstContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBorExpression(ifccParser.BorExpressionContext ctx) { }
+	@Override public void enterBor(ifccParser.BorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBorExpression(ifccParser.BorExpressionContext ctx) { }
+	@Override public void exitBor(ifccParser.BorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBorOperation(ifccParser.BorOperationContext ctx) { }
+	@Override public void enterVar(ifccParser.VarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBorOperation(ifccParser.BorOperationContext ctx) { }
+	@Override public void exitVar(ifccParser.VarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBxorExpression(ifccParser.BxorExpressionContext ctx) { }
+	@Override public void enterUnary(ifccParser.UnaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBxorExpression(ifccParser.BxorExpressionContext ctx) { }
+	@Override public void exitUnary(ifccParser.UnaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBxorOperation(ifccParser.BxorOperationContext ctx) { }
+	@Override public void enterBitshift(ifccParser.BitshiftContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBxorOperation(ifccParser.BxorOperationContext ctx) { }
+	@Override public void exitBitshift(ifccParser.BitshiftContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBandExpression(ifccParser.BandExpressionContext ctx) { }
+	@Override public void enterFunc_call(ifccParser.Func_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBandExpression(ifccParser.BandExpressionContext ctx) { }
+	@Override public void exitFunc_call(ifccParser.Func_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBandOperation(ifccParser.BandOperationContext ctx) { }
+	@Override public void enterAnd(ifccParser.AndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBandOperation(ifccParser.BandOperationContext ctx) { }
+	@Override public void exitAnd(ifccParser.AndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEqualExpression(ifccParser.EqualExpressionContext ctx) { }
+	@Override public void enterBxor(ifccParser.BxorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEqualExpression(ifccParser.EqualExpressionContext ctx) { }
+	@Override public void exitBxor(ifccParser.BxorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEqualOperation(ifccParser.EqualOperationContext ctx) { }
+	@Override public void enterRelational(ifccParser.RelationalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEqualOperation(ifccParser.EqualOperationContext ctx) { }
+	@Override public void exitRelational(ifccParser.RelationalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelationalExpression(ifccParser.RelationalExpressionContext ctx) { }
+	@Override public void enterBand(ifccParser.BandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelationalExpression(ifccParser.RelationalExpressionContext ctx) { }
+	@Override public void exitBand(ifccParser.BandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelationalOperation(ifccParser.RelationalOperationContext ctx) { }
+	@Override public void enterEquality(ifccParser.EqualityContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelationalOperation(ifccParser.RelationalOperationContext ctx) { }
+	@Override public void exitEquality(ifccParser.EqualityContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBitshiftExpression(ifccParser.BitshiftExpressionContext ctx) { }
+	@Override public void enterEqualityOperator(ifccParser.EqualityOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBitshiftExpression(ifccParser.BitshiftExpressionContext ctx) { }
+	@Override public void exitEqualityOperator(ifccParser.EqualityOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBitshiftOperation(ifccParser.BitshiftOperationContext ctx) { }
+	@Override public void enterRelationalOperator(ifccParser.RelationalOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBitshiftOperation(ifccParser.BitshiftOperationContext ctx) { }
+	@Override public void exitRelationalOperator(ifccParser.RelationalOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddExpression(ifccParser.AddExpressionContext ctx) { }
+	@Override public void enterBitShiftOperator(ifccParser.BitShiftOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddExpression(ifccParser.AddExpressionContext ctx) { }
+	@Override public void exitBitShiftOperator(ifccParser.BitShiftOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddOperation(ifccParser.AddOperationContext ctx) { }
+	@Override public void enterMultOperator(ifccParser.MultOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddOperation(ifccParser.AddOperationContext ctx) { }
+	@Override public void exitMultOperator(ifccParser.MultOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMultExpression(ifccParser.MultExpressionContext ctx) { }
+	@Override public void enterAddOperator(ifccParser.AddOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMultExpression(ifccParser.MultExpressionContext ctx) { }
+	@Override public void exitAddOperator(ifccParser.AddOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMultOperation(ifccParser.MultOperationContext ctx) { }
+	@Override public void enterUnaryOperator(ifccParser.UnaryOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMultOperation(ifccParser.MultOperationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterUnaryExpression(ifccParser.UnaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUnaryExpression(ifccParser.UnaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPrimaryExpression(ifccParser.PrimaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPrimaryExpression(ifccParser.PrimaryExpressionContext ctx) { }
+	@Override public void exitUnaryOperator(ifccParser.UnaryOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -346,18 +322,6 @@ public class ifccBaseListener implements ifccListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLoop_bloc(ifccParser.Loop_blocContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterReturn_stmt(ifccParser.Return_stmtContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReturn_stmt(ifccParser.Return_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -423,13 +387,85 @@ public class ifccBaseListener implements ifccListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(ifccParser.StatementContext ctx) { }
+	@Override public void enterReturn_stmt(ifccParser.Return_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStatement(ifccParser.StatementContext ctx) { }
+	@Override public void exitReturn_stmt(ifccParser.Return_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclaration_stmt(ifccParser.Declaration_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclaration_stmt(ifccParser.Declaration_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAffectation_stmt(ifccParser.Affectation_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAffectation_stmt(ifccParser.Affectation_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUnary_stmt(ifccParser.Unary_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnary_stmt(ifccParser.Unary_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunc_call_stmt(ifccParser.Func_call_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunc_call_stmt(ifccParser.Func_call_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCondition(ifccParser.ConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCondition(ifccParser.ConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLoop(ifccParser.LoopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLoop(ifccParser.LoopContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

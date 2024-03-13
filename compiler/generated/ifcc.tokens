@@ -39,6 +39,7 @@ COMMENT=38
 DIRECTIVE=39
 WS=40
 VAR=41
+MULT=42
 '{'=1
 '}'=2
 '('=3

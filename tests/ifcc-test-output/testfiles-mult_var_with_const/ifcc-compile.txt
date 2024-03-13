@@ -1,2 +1,4 @@
+line 3:14 mismatched input '*' expecting ';'
+error: syntax error during parsing
 
-exit status: 0
+exit status: 1

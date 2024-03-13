@@ -1,7 +1,4 @@
-line 2:18 mismatched input '/' expecting ';'
-line 2:22 mismatched input '%' expecting ';'
-line 2:26 mismatched input '/' expecting ';'
-line 2:30 mismatched input '*' expecting ';'
+line 2:14 mismatched input '*' expecting ';'
 error: syntax error during parsing
 
 exit status: 1

@@ -27,95 +27,87 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExpression(ifccParser::ExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitPar(ifccParser::ParContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitOrExpression(ifccParser::OrExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitAdd(ifccParser::AddContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitOrOperation(ifccParser::OrOperationContext *ctx) override {
+  virtual antlrcpp::Any visitMult(ifccParser::MultContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAndExpression(ifccParser::AndExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitOr(ifccParser::OrContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAndOperation(ifccParser::AndOperationContext *ctx) override {
+  virtual antlrcpp::Any visitConst(ifccParser::ConstContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBorExpression(ifccParser::BorExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitBor(ifccParser::BorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBorOperation(ifccParser::BorOperationContext *ctx) override {
+  virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBxorExpression(ifccParser::BxorExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBxorOperation(ifccParser::BxorOperationContext *ctx) override {
+  virtual antlrcpp::Any visitBitshift(ifccParser::BitshiftContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBandExpression(ifccParser::BandExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitFunc_call(ifccParser::Func_callContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBandOperation(ifccParser::BandOperationContext *ctx) override {
+  virtual antlrcpp::Any visitAnd(ifccParser::AndContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitEqualExpression(ifccParser::EqualExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitBxor(ifccParser::BxorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitEqualOperation(ifccParser::EqualOperationContext *ctx) override {
+  virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRelationalExpression(ifccParser::RelationalExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitBand(ifccParser::BandContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRelationalOperation(ifccParser::RelationalOperationContext *ctx) override {
+  virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBitshiftExpression(ifccParser::BitshiftExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitEqualityOperator(ifccParser::EqualityOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBitshiftOperation(ifccParser::BitshiftOperationContext *ctx) override {
+  virtual antlrcpp::Any visitRelationalOperator(ifccParser::RelationalOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAddExpression(ifccParser::AddExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitBitShiftOperator(ifccParser::BitShiftOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAddOperation(ifccParser::AddOperationContext *ctx) override {
+  virtual antlrcpp::Any visitMultOperator(ifccParser::MultOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitMultExpression(ifccParser::MultExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitAddOperator(ifccParser::AddOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitMultOperation(ifccParser::MultOperationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitUnaryExpression(ifccParser::UnaryExpressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitPrimaryExpression(ifccParser::PrimaryExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitUnaryOperator(ifccParser::UnaryOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -124,10 +116,6 @@ public:
   }
 
   virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitReturn_stmt(ifccParser::Return_stmtContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -151,7 +139,31 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override {
+  virtual antlrcpp::Any visitReturn_stmt(ifccParser::Return_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDeclaration_stmt(ifccParser::Declaration_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAffectation_stmt(ifccParser::Affectation_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitUnary_stmt(ifccParser::Unary_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFunc_call_stmt(ifccParser::Func_call_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitLoop(ifccParser::LoopContext *ctx) override {
     return visitChildren(ctx);
   }
 

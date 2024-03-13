@@ -21,7 +21,17 @@ OBJECTS=build/ifccBaseVisitor.o \
 	build/CodeGenVisitor.o \
 	build/VariableVisitor.o \
 	build/CodeGenArm.o \
-	build/CodeGenx86.o
+	build/CodeGenx86.o \
+	build/BasicBlock.o \
+	build/CFG.o \
+	build/CFGVisitor.o \
+	build/IR.o \
+	build/Type.o \
+	build/Instr_return.o \
+	build/Instr_affectation.o \
+	build/Instr_minus.o \
+	build/Instr_not.o \
+	build/Instr_add.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build

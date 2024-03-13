@@ -60,6 +60,7 @@ argparser.add_argument('-v','--verbose',action="count",default=0,
                        help='Increase verbosity level. You can use this option multiple times.')
 argparser.add_argument('-w','--wrapper',metavar='PATH',
                        help='Invoke your compiler through the shell script at PATH. (default: `ifcc-wrapper.sh`)')
+argparser.add_argument('--target', metavar='ARCH', choices=['arm', 'x86'], help='Specify the target architecture (arm or x86)')
 
 args=argparser.parse_args()
 
@@ -180,7 +181,8 @@ for jobname in jobs:
             dumpfile("gcc-execute.txt")
             
     ## IFCC compiler
-    ifccstatus=command(wrapper+" asm-ifcc.s input.c", "ifcc-compile.txt")
+    ifccstatus=command(wrapper + " " +  args.target + " asm-ifcc.s input.c", "ifcc-compile.txt")
+
     
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok

@@ -3,13 +3,14 @@
 #include <sstream>
 #include <cstdlib>
 #include <getopt.h> // Include for getopt_long
+#include <cstring>
 
 #include "antlr4-runtime.h"
 #include "generated/ifccLexer.h"
 #include "generated/ifccParser.h"
 #include "generated/ifccBaseVisitor.h"
 
-#include "CodeGenVisitor.h"
+#include "CFGVisitor.h"
 #include "VariableVisitor.h"
 
 using namespace antlr4;
@@ -33,6 +34,7 @@ int main(int argc, const char **argv)
             target_architecture = argv[i] + 9; // Extrait l'architecture cible
             // Vérifiez que l'architecture cible est valide
             if (target_architecture != "x86" && target_architecture != "arm") {
+                cerr << target_architecture << endl;
                 cerr << "Error: Invalid target architecture. Supported architectures are x86 and arm." << endl;
                 exit(1);
             }
@@ -74,15 +76,19 @@ int main(int argc, const char **argv)
 
   std::map<std::string, int> symbols;
 
-  // VariableVisitor variableVisitor;
-  // variableVisitor.visit(tree);
-  // symbols = variableVisitor.getSymbols();
+  VariableVisitor variableVisitor;
+  variableVisitor.visit(tree);
+  symbols = variableVisitor.getSymbols();
 
-  CodeGenVisitor v;
-  v.setSymbols(symbols);
+//   CodeGenVisitor v;
+//   v.setSymbols(symbols);
+
+    CFGVisitor cfg;
+    cfg.setSymbols(symbols);
+    cfg.visit(tree);
   // Passer l'architecture cible au visiteur
-  v.setTargetArchitecture(target_architecture);
-  v.visit(tree);
+//   v.setTargetArchitecture(target_architecture);
+//   v.visit(tree);
 
   return 0;
 }

@@ -25,57 +25,51 @@ public:
 
     virtual antlrcpp::Any visitBloc(ifccParser::BlocContext *context) = 0;
 
-    virtual antlrcpp::Any visitExpression(ifccParser::ExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) = 0;
 
-    virtual antlrcpp::Any visitOrExpression(ifccParser::OrExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitAdd(ifccParser::AddContext *context) = 0;
 
-    virtual antlrcpp::Any visitOrOperation(ifccParser::OrOperationContext *context) = 0;
+    virtual antlrcpp::Any visitMult(ifccParser::MultContext *context) = 0;
 
-    virtual antlrcpp::Any visitAndExpression(ifccParser::AndExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitOr(ifccParser::OrContext *context) = 0;
 
-    virtual antlrcpp::Any visitAndOperation(ifccParser::AndOperationContext *context) = 0;
+    virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) = 0;
 
-    virtual antlrcpp::Any visitBorExpression(ifccParser::BorExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitBor(ifccParser::BorContext *context) = 0;
 
-    virtual antlrcpp::Any visitBorOperation(ifccParser::BorOperationContext *context) = 0;
+    virtual antlrcpp::Any visitVar(ifccParser::VarContext *context) = 0;
 
-    virtual antlrcpp::Any visitBxorExpression(ifccParser::BxorExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *context) = 0;
 
-    virtual antlrcpp::Any visitBxorOperation(ifccParser::BxorOperationContext *context) = 0;
+    virtual antlrcpp::Any visitBitshift(ifccParser::BitshiftContext *context) = 0;
 
-    virtual antlrcpp::Any visitBandExpression(ifccParser::BandExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitFunc_call(ifccParser::Func_callContext *context) = 0;
 
-    virtual antlrcpp::Any visitBandOperation(ifccParser::BandOperationContext *context) = 0;
+    virtual antlrcpp::Any visitAnd(ifccParser::AndContext *context) = 0;
 
-    virtual antlrcpp::Any visitEqualExpression(ifccParser::EqualExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitBxor(ifccParser::BxorContext *context) = 0;
 
-    virtual antlrcpp::Any visitEqualOperation(ifccParser::EqualOperationContext *context) = 0;
+    virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext *context) = 0;
 
-    virtual antlrcpp::Any visitRelationalExpression(ifccParser::RelationalExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitBand(ifccParser::BandContext *context) = 0;
 
-    virtual antlrcpp::Any visitRelationalOperation(ifccParser::RelationalOperationContext *context) = 0;
+    virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext *context) = 0;
 
-    virtual antlrcpp::Any visitBitshiftExpression(ifccParser::BitshiftExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitEqualityOperator(ifccParser::EqualityOperatorContext *context) = 0;
 
-    virtual antlrcpp::Any visitBitshiftOperation(ifccParser::BitshiftOperationContext *context) = 0;
+    virtual antlrcpp::Any visitRelationalOperator(ifccParser::RelationalOperatorContext *context) = 0;
 
-    virtual antlrcpp::Any visitAddExpression(ifccParser::AddExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitBitShiftOperator(ifccParser::BitShiftOperatorContext *context) = 0;
 
-    virtual antlrcpp::Any visitAddOperation(ifccParser::AddOperationContext *context) = 0;
+    virtual antlrcpp::Any visitMultOperator(ifccParser::MultOperatorContext *context) = 0;
 
-    virtual antlrcpp::Any visitMultExpression(ifccParser::MultExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitAddOperator(ifccParser::AddOperatorContext *context) = 0;
 
-    virtual antlrcpp::Any visitMultOperation(ifccParser::MultOperationContext *context) = 0;
-
-    virtual antlrcpp::Any visitUnaryExpression(ifccParser::UnaryExpressionContext *context) = 0;
-
-    virtual antlrcpp::Any visitPrimaryExpression(ifccParser::PrimaryExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitUnaryOperator(ifccParser::UnaryOperatorContext *context) = 0;
 
     virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext *context) = 0;
 
     virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *context) = 0;
-
-    virtual antlrcpp::Any visitReturn_stmt(ifccParser::Return_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitFunction_call(ifccParser::Function_callContext *context) = 0;
 
@@ -87,7 +81,19 @@ public:
 
     virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *context) = 0;
 
-    virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *context) = 0;
+    virtual antlrcpp::Any visitReturn_stmt(ifccParser::Return_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitDeclaration_stmt(ifccParser::Declaration_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitAffectation_stmt(ifccParser::Affectation_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitUnary_stmt(ifccParser::Unary_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitFunc_call_stmt(ifccParser::Func_call_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *context) = 0;
+
+    virtual antlrcpp::Any visitLoop(ifccParser::LoopContext *context) = 0;
 
     virtual antlrcpp::Any visitConstante(ifccParser::ConstanteContext *context) = 0;
 
