@@ -22,3 +22,30 @@ void CFG::gen_asm_prologue(ostream &o){
 void CFG::gen_asm_epilogue(ostream &o){
     o << "\tpopq	%rbp\n\tret\n";
 }
+
+void CFG::assign_var_index(){
+    int number_of_symbols = (int)SymbolType.size();
+    int index = number_of_symbols * 4;
+    for (auto symbols : SymbolType)
+    {
+        SymbolIndex[symbols.first] = index;
+        index -= 4;
+    }
+}
+void CFG::add_to_symbol_table(string name, Type t){
+    SymbolType[name] = t;
+}
+
+string CFG::create_new_tempvar(Type t){
+    string new_tmp = "tmp" + to_string(nextFreeSymbolIndex++);
+    SymbolType[new_tmp] = t;
+    return new_tmp;
+}
+
+int CFG::get_var_index(string name){
+    return SymbolIndex[name];
+}
+
+Type CFG::get_var_type(string name){
+    return SymbolType[name];
+}

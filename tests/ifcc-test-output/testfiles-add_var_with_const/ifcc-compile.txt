@@ -1,2 +1,5 @@
+terminate called after throwing an instance of 'std::bad_cast'
+  what():  std::bad_cast
+Aborted (core dumped)
 
-exit status: 0
+exit status: 134

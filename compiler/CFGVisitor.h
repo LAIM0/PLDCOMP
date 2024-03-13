@@ -5,7 +5,8 @@
 #include "Instr_return.h"
 #include "Instr_minus.h"
 #include "Instr_add.h"
-#include "Instr_affectation.h"
+#include "Instr_ldconst.h"
+#include "Instr_copy.h"
 #include "Type.h"
 #include "CFG.h"
 #include "BasicBlock.h"
@@ -30,5 +31,4 @@ private:
     std::map<std::string, int> symbols;
     std::map<std::string, int> symbols_value;
     std::map<std::string, int> temp_vars;
-    std::string reg;
 };

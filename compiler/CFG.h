@@ -35,6 +35,7 @@ class CFG {
 	// symbol table methods
 	void add_to_symbol_table(string name, Type t);
 	string create_new_tempvar(Type t);
+	void assign_var_index();
 	int get_var_index(string name);
 	Type get_var_type(string name);
 
@@ -45,7 +46,7 @@ class CFG {
  protected:
 	map <string, Type> SymbolType; /**< part of the symbol table  */
 	map <string, int> SymbolIndex; /**< part of the symbol table  */
-	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
+	int nextFreeSymbolIndex = 0; /**< to allocate new symbols in the symbol table */
 	int nextBBnumber; /**< just for naming */
 	string cfgName;
 	vector <BasicBlock*> bbs; /**< all the basic blocks of this CFG*/
