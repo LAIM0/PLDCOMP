@@ -91,16 +91,3 @@
 //         return true;
 //     }
 // }
-
-// std::map<std::string, int> VariableVisitor::getSymbols()
-// {
-//     int number_of_symbols = (int)usedVariables.size();
-//     int index = number_of_symbols * 4;
-//     std::map<std::string, int> symbols;
-//     for (auto it = usedVariables.begin(); it != usedVariables.end(); ++it)
-//     {
-//         symbols[*it] = index;
-//         index -= 4;
-//     }
-//     return symbols;
-// }

@@ -14,6 +14,13 @@ main:
 	movl 	%eax, -8(%rbp)
 	movl 	$5, %eax
 	imull 	-8(%rbp), %eax
+	cltd
+	idivl 	-12(%rbp)
+	cltd
+	idivl 	-16(%rbp)
+	movl 	%edx, %eax
+	cltd
+	idivl 	-20(%rbp)
 	imull 	-24(%rbp), %eax
 	movl 	%eax, -4(%rbp)
 	movl 	-4(%rbp), %eax

@@ -7,6 +7,8 @@ main:
 	movl 	-8(%rbp), %eax
 	movl 	%eax, -12(%rbp)
 	movl 	$12, %eax
+	cltd
+	idivl 	-12(%rbp)
 	movl 	%eax, -4(%rbp)
 	movl 	-4(%rbp), %eax
 	popq	%rbp

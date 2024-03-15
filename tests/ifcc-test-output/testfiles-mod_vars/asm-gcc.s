@@ -12,7 +12,7 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	movl	$20, -12(%rbp)
-	movl	$5, -8(%rbp)
+	movl	$6, -8(%rbp)
 	movl	-12(%rbp), %eax
 	cltd
 	idivl	-8(%rbp)

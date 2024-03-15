@@ -13,9 +13,6 @@
 //     virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override;
 //     virtual antlrcpp::Any visitConst(ifccParser::ConstContext * ctx) override;
 //     virtual antlrcpp::Any visitVar(ifccParser::VarContext * ctx) override;
-//     virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext * ctx) override;
-//     virtual antlrcpp::Any visitMult(ifccParser::MultContext * ctx) override;
-//     virtual antlrcpp::Any visitAdd(ifccParser::AddContext * ctx) override;
 //     std::map<std::string, int> getSymbols();
 
 // private:

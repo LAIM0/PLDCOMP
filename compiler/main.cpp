@@ -76,7 +76,8 @@ int main(int argc, const char **argv)
 
   std::map<std::string, int> symbols;
 
-
+    // VariableVisitor vv;
+    // vv.visit(tree);
 
     CFGVisitor cfg;
     cfg.visit(tree);

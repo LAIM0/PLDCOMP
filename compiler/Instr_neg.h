@@ -2,9 +2,9 @@
 #include "IR.h"
 #include <string>
 
-class Instr_minus : public IRInstr{
+class Instr_neg : public IRInstr{
 public:
-    Instr_minus(BasicBlock *bb, Type type, std::string source)
+    Instr_neg(BasicBlock *bb, Type type, std::string source)
         : IRInstr(bb,t), source(source) {};
 
     virtual void gen_asm(std::ostream &o) override;
