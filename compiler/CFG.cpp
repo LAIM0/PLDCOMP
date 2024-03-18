@@ -18,15 +18,36 @@ void CFG::gen_asm(ostream &o)
 
 void CFG::gen_asm_prologue(ostream &o)
 {
-    o << ".globl main\n";
-    o << "main:\n";
-    o << "\tpushq	%rbp\n"
-      << "\tmovq	%rsp, %rbp\n";
+    string target = this->target_architecture;
+    int nbVar = this->SymbolType.size();
+    if (target == "x86")
+    {
+        o << ".globl main\n";
+        o << "main:\n";
+        o << "\tpushq	%rbp\n"
+          << "\tmovq	%rsp, %rbp\n";
+    }
+    else if (target == "arm")
+    {
+        o << ".globl _main\n";
+        o << "_main:\n";
+        o << "\tsub	sp, sp, #" << nbVar * 4 << "\n";
+    }
 }
 
 void CFG::gen_asm_epilogue(ostream &o)
 {
-    o << "\tpopq	%rbp\n\tret\n";
+    string target = this->target_architecture;
+    int nbVar = this->SymbolType.size();
+    if (target == "x86")
+    {
+        o << "\tpopq	%rbp\n\tret\n";
+    }
+    else if (target == "arm")
+    {
+        o << "\tadd	sp, sp, #" << nbVar * 4 << "\n";
+        o << "\tret\n";
+    }
 }
 
 void CFG::assign_var_index()
