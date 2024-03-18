@@ -43,6 +43,7 @@ public:
 	// basic block management
 	string new_BB_name();
 	BasicBlock *current_bb;
+	string target_architecture;
 
 protected:
 	map<string, Type> SymbolType; /**< part of the symbol table  */
@@ -50,7 +51,6 @@ protected:
 	int nextFreeSymbolIndex = 0;  /**< to allocate new symbols in the symbol table */
 	int nextBBnumber;			  /**< just for naming */
 	string cfgName;
-	string target_architecture;
 	vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
 };
 

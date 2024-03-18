@@ -1,38 +1,18 @@
-	.file	"ret42.c"
-	.text
-	.globl	main
-	.type	main, @function
-main:
-.LFB0:
+	.section	__TEXT,__text,regular,pure_instructions
+	.build_version macos, 14, 0	sdk_version 14, 4
+	.globl	_main                           ; -- Begin function main
+	.p2align	2
+_main:                                  ; @main
 	.cfi_startproc
-	endbr64
-	pushq	%rbp
+; %bb.0:
+	sub	sp, sp, #16
 	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$42, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
+	str	wzr, [sp, #12]
+	mov	w8, #67
+	str	w8, [sp, #8]
+	mov	w0, #42
+	add	sp, sp, #16
 	ret
 	.cfi_endproc
-.LFE0:
-	.size	main, .-main
-	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
-	.section	.note.GNU-stack,"",@progbits
-	.section	.note.gnu.property,"a"
-	.align 8
-	.long	 1f - 0f
-	.long	 4f - 1f
-	.long	 5
-0:
-	.string	 "GNU"
-1:
-	.align 8
-	.long	 0xc0000002
-	.long	 3f - 2f
-2:
-	.long	 0x3
-3:
-	.align 8
-4:
+                                        ; -- End function
+.subsections_via_symbols

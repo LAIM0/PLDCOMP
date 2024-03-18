@@ -1,4 +1,5 @@
-int main(){
-    int x = 2 & 3;
-    return x;
+int main()
+{
+    int x = 67;
+    return 42;
 }
