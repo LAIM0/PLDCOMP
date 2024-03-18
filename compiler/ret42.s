@@ -1,5 +1,5 @@
 	.section	__TEXT,__text,regular,pure_instructions
-	.build_version macos, 14, 0	sdk_version 14, 2
+	.build_version macos, 14, 0	sdk_version 14, 4
 	.globl	_main                           ; -- Begin function main
 	.p2align	2
 _main:                                  ; @main
@@ -10,7 +10,7 @@ _main:                                  ; @main
 	str	wzr, [sp, #12]
 	mov	w8, #67
 	str	w8, [sp, #8]
-	mov	w0, #42
+	ldr	w0, [sp, #8]
 	add	sp, sp, #16
 	ret
 	.cfi_endproc
