@@ -1,5 +1,5 @@
-int main(){
-    int i = 1;
-    int z = i - ++i;
-    return z;
+int main()
+{
+    int x = 67;
+    return 42;
 }
