@@ -24,7 +24,7 @@ void Instr_copy::gen_asm(ostream &o)
         }
         else
         {
-            var1 = "[sp, #" + to_string(this->bb->cfg->get_var_index(source) * -1) + "]";
+            var1 = "[sp, #" + to_string(this->bb->cfg->get_var_index(source)) + "]";
         }
 
         if (destination == "!reg")
@@ -39,7 +39,7 @@ void Instr_copy::gen_asm(ostream &o)
         }
         else
         {
-            var2 = "[sp, #" + to_string(this->bb->cfg->get_var_index(destination) * -1) + "]";
+            var2 = "[sp, #" + to_string(this->bb->cfg->get_var_index(destination)) + "]";
         }
 
         if (registreDest && registreSource)
