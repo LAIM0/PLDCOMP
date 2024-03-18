@@ -44,15 +44,15 @@ void Instr_copy::gen_asm(ostream &o)
 
         if (registreDest && registreSource)
         {
-            o << "\tmov \t" << var2 << ", " << var1 << "\n";
+            o << "\tmov " << var2 << ", " << var1 << "\n";
         }
         else if (registreSource)
         {
-            o << "\tstr \t" << var1 << ", " << var2 << "\n";
+            o << "\tstr " << var1 << ", " << var2 << "\n";
         }
         else if (registreDest)
         {
-            o << "\tldr \t" << var2 << ", " << var1 << "\n";
+            o << "\tldr " << var2 << ", " << var1 << "\n";
         }
     }
     else if (target == "x86")
