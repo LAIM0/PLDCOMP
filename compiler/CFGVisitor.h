@@ -37,9 +37,13 @@ public:
 
     void setSymbols(std::map<std::string, int> symbols);
 
+    // Flag management
+    void setTargetFlag(string target_architecture);
+
 private:
     CFG *currentCFG;
     std::map<std::string, int> symbols;
     std::map<std::string, int> symbols_value;
     std::map<std::string, int> temp_vars;
+    string target_architecture; /**< Flag to choose the assembly version */
 };
