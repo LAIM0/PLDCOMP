@@ -5,7 +5,7 @@ using namespace std;
 
 antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 {
-    CFG *cfg = new CFG("prog");
+    CFG *cfg = new CFG("prog", this->target_architecture);
     currentCFG = cfg;
     BasicBlock *bbepilogue = new BasicBlock(currentCFG, "");
     BasicBlock *bbmain = new BasicBlock(currentCFG, "main");
