@@ -199,38 +199,55 @@ antlrcpp::Any CFGVisitor::visitBxor(ifccParser::BxorContext *ctx)
 }
 
 antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
+    antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
 {
     if (ctx->unaryOperator()->MINUS() != nullptr)
     {
-        visit(ctx->expression());
-        Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
-        currentCFG->current_bb->add_IRInstr(instr_neg);
-    }
-    else if (ctx->unaryOperator()->NOT() != nullptr)
-    {
-        visit(ctx->expression());
-        Instr_not *instr_not = new Instr_not(currentCFG->current_bb, _INT, "!reg");
-        currentCFG->current_bb->add_IRInstr(instr_not);
-    }
-    else if (ctx->unaryOperator()->INCREMENT() != nullptr)
-    {
-        string tmp = currentCFG->create_new_tempvar(_INT);
-        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
-        visit(ctx->expression());
-        Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
-        currentCFG->current_bb->add_IRInstr(instr_ldconst);
-        currentCFG->current_bb->add_IRInstr(instr_add);
+        if (ctx->unaryOperator()->MINUS() != nullptr)
+        {
+            visit(ctx->expression());
+            Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
+            Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
+            currentCFG->current_bb->add_IRInstr(instr_neg);
+        }
+        else if (ctx->unaryOperator()->NOT() != nullptr)
+        {
+        }
+        else if (ctx->unaryOperator()->NOT() != nullptr)
+        {
+            visit(ctx->expression());
+            Instr_not *instr_not = new Instr_not(currentCFG->current_bb, _INT, "!reg");
+            currentCFG->current_bb->add_IRInstr(instr_not);
+        }
+        else if (ctx->unaryOperator()->INCREMENT() != nullptr)
+        {
+            string tmp = currentCFG->create_new_tempvar(_INT);
+            Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
+            visit(ctx->expression());
+            Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
+            Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
+            currentCFG->current_bb->add_IRInstr(instr_ldconst);
+            currentCFG->current_bb->add_IRInstr(instr_add);
+        }
+        else if (ctx->unaryOperator()->DECREMENT() != nullptr)
     }
     else if (ctx->unaryOperator()->DECREMENT() != nullptr)
     {
         string tmp = currentCFG->create_new_tempvar(_INT);
         Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
+        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
         visit(ctx->expression());
+        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
     return 0;
+}
+
+void CFGVisitor::setTargetFlag(string target_architecture)
+{
+    this->target_architecture = target_architecture;
 }
 
 antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
@@ -271,7 +288,7 @@ antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
 {
     visit(ctx->expression(0));
     string left_tmp_var = currentCFG->create_new_tempvar(_INT);
-    Instr_copy * instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
+    Instr_copy *instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_tmp_copy);
     visit(ctx->expression(1));
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", "!regd");
