@@ -6,9 +6,12 @@ main:
 	movl 	%eax, -12(%rbp)
 	movl 	$3, %eax
 	movl 	%eax, -8(%rbp)
-	movl 	-8(%rbp), %eax
-	movl 	%eax, -16(%rbp)
 	movl 	-12(%rbp), %eax
+	movl 	%eax, -20(%rbp)
+	movl 	-8(%rbp), %eax
+	movl 	-20(%rbp), %edx
+	movl 	%eax, -16(%rbp)
+	movl 	%edx, %eax
 	cltd
 	idivl 	-16(%rbp)
 	movl 	%eax, -4(%rbp)

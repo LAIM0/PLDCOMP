@@ -9,6 +9,7 @@
 #include "Instr_or.h"
 #include "Instr_xor.h"
 #include "Instr_sub.h"
+#include "Instr_comp.h"
 #include "Instr_mult.h"
 #include "Instr_div.h"
 #include "Instr_ldconst.h"
@@ -34,8 +35,9 @@ public:
     virtual antlrcpp::Any visitBor(ifccParser::BorContext *ctx) override;
     virtual antlrcpp::Any visitBxor(ifccParser::BxorContext *ctx) override;
     virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *ctx) override;
+    virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext * ctx) override;
+    virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext * ctx) override;
 
-    void setSymbols(std::map<std::string, int> symbols);
 
 private:
     CFG *currentCFG;
