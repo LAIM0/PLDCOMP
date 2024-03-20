@@ -44,6 +44,11 @@ public:
 
     string target_architecture; /**< Flag to choose the assembly version */
 
+    // Flag management
+    void setTargetFlag(string target_architecture);
+
+    string target_architecture; /**< Flag to choose the assembly version */
+
 private:
     CFG *currentCFG;
     std::map<std::string, int> symbols;
