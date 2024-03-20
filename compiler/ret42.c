@@ -1,5 +1,4 @@
 int main(){
-    int i = 1;
-    int z = i - ++i;
-    return z;
+    int y =  8 + 4;
+    return y;
 }

@@ -37,6 +37,7 @@ public:
     virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *ctx) override;
     virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext * ctx) override;
     virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext * ctx) override;
+    virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext * ctx) override;
 
 
 private:

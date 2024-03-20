@@ -11,7 +11,6 @@
 #include "generated/ifccBaseVisitor.h"
 
 #include "CFGVisitor.h"
-#include "VariableVisitor.h"
 
 using namespace antlr4;
 using namespace std;

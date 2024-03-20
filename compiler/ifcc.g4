@@ -37,7 +37,6 @@ condition_bloc:
 
 loop_bloc: 'while(' expression ')' bloc;
 
-
 function_call: VAR '(' expression (',' expression)* ')';
 
 declaration: TYPE ( VAR | affectation);
@@ -87,7 +86,7 @@ BNOT: '~';
 RETURN: 'return';
 TYPE: 'int' | 'char';
 NUMBER: MINUS? [0-9]+;
-CHAR: [a-zA-Z][0-9a-zA-Z_];
+CHAR: '\''[0-9a-zA-Z_]+'\'';
 COMMENT: '/*' .*? '*/' -> skip;
 DIRECTIVE: '#' .*? '\n' -> skip;
 WS: [ \t\r\n] -> channel(HIDDEN);
