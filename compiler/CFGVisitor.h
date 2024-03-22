@@ -35,14 +35,8 @@ public:
     virtual antlrcpp::Any visitBor(ifccParser::BorContext *ctx) override;
     virtual antlrcpp::Any visitBxor(ifccParser::BxorContext *ctx) override;
     virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *ctx) override;
-    virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext * ctx) override;
-    virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext * ctx) override;
-
-
-    // Flag management
-    void setTargetFlag(string target_architecture);
-
-    string target_architecture; /**< Flag to choose the assembly version */
+    virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext *ctx) override;
+    virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext *ctx) override;
 
     // Flag management
     void setTargetFlag(string target_architecture);

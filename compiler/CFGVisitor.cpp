@@ -87,23 +87,24 @@ antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx)
 {
     visit(ctx->expression(0));
     string left_tmp_var = currentCFG->create_new_tempvar(_INT);
-    Instr_copy *instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
-    currentCFG->current_bb->add_IRInstr(instr_tmp_copy);
+    Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
     visit(ctx->expression(1));
-    Instr_copy *instr_left_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!regd");
-    currentCFG->current_bb->add_IRInstr(instr_left_copy);
     if (ctx->addOperator()->PLUS() != nullptr)
     {
-        Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, "!reg", "!regd");
+        Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_add);
     }
     else if (ctx->addOperator()->MINUS() != nullptr)
     {
-        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, "!reg", "!regd");
+        string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+        Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
+        currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+        Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_reg_copy);
+        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
-    Instr_copy *instr_final_copy = new Instr_copy(currentCFG->current_bb, _INT, "!regd", "!reg");
-    currentCFG->current_bb->add_IRInstr(instr_final_copy);
 
     return 0;
 }
@@ -112,39 +113,47 @@ antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
 {
     visit(ctx->expression(0));
     string left_tmp_var = currentCFG->create_new_tempvar(_INT);
-    Instr_copy *instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
-    currentCFG->current_bb->add_IRInstr(instr_tmp_copy);
+    Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
     visit(ctx->expression(1));
-    Instr_copy *instr_left_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!regd");
-    currentCFG->current_bb->add_IRInstr(instr_left_copy);
     if (ctx->multOperator()->MULTIPLY() != nullptr)
     {
-        Instr_mult *instr_mult = new Instr_mult(currentCFG->current_bb, _INT, "!reg", "!regd");
-        Instr_copy *instr_final_copy = new Instr_copy(currentCFG->current_bb, _INT, "!regd", "!reg");
+        Instr_mult *instr_mult = new Instr_mult(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_mult);
-        currentCFG->current_bb->add_IRInstr(instr_final_copy);
     }
     else if (ctx->multOperator()->DIVIDE() != nullptr)
     {
-        string right_tmp = currentCFG->create_new_tempvar(_INT);
-        Instr_copy *instr_right_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp);
-        currentCFG->current_bb->add_IRInstr(instr_right_copy);
-        Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, "!regd", "!reg");
+        string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+        Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
+        currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+        Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_reg_copy);
-        Instr_div *instr_div = new Instr_div(currentCFG->current_bb, _INT, right_tmp);
+        Instr_div *instr_div = new Instr_div(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_div);
     }
     else if (ctx->multOperator()->MOD() != nullptr)
     {
-        string right_tmp = currentCFG->create_new_tempvar(_INT);
-        Instr_copy *instr_right_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp);
-        currentCFG->current_bb->add_IRInstr(instr_right_copy);
-        Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, "!regd", "!reg");
+        string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+        Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
+        currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+
+        Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_reg_copy);
-        Instr_div *instr_div = new Instr_div(currentCFG->current_bb, _INT, right_tmp);
-        Instr_copy *instr_mod = new Instr_copy(currentCFG->current_bb, _INT, "!regd", "!reg");
+
+        Instr_div *instr_div = new Instr_div(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_div);
-        currentCFG->current_bb->add_IRInstr(instr_mod);
+
+        Instr_mult *instr_mult = new Instr_mult(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_mult);
+
+        string sub_for_mod_tmp_var = currentCFG->create_new_tempvar(_INT);
+        Instr_copy *instr_sub_for_mod_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", sub_for_mod_tmp_var);
+        currentCFG->current_bb->add_IRInstr(instr_sub_for_mod_tmp_copy);
+
+        currentCFG->current_bb->add_IRInstr(instr_reg_copy);
+
+        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, sub_for_mod_tmp_var, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_sub);
     }
 
     return 0;
@@ -199,47 +208,39 @@ antlrcpp::Any CFGVisitor::visitBxor(ifccParser::BxorContext *ctx)
 }
 
 antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
-    antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
 {
     if (ctx->unaryOperator()->MINUS() != nullptr)
     {
-        if (ctx->unaryOperator()->MINUS() != nullptr)
-        {
-            visit(ctx->expression());
-            Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
-            Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
-            currentCFG->current_bb->add_IRInstr(instr_neg);
-        }
-        else if (ctx->unaryOperator()->NOT() != nullptr)
-        {
-        }
-        else if (ctx->unaryOperator()->NOT() != nullptr)
-        {
-            visit(ctx->expression());
-            Instr_not *instr_not = new Instr_not(currentCFG->current_bb, _INT, "!reg");
-            currentCFG->current_bb->add_IRInstr(instr_not);
-        }
-        else if (ctx->unaryOperator()->INCREMENT() != nullptr)
-        {
-            string tmp = currentCFG->create_new_tempvar(_INT);
-            Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
-            visit(ctx->expression());
-            Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
-            Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
-            currentCFG->current_bb->add_IRInstr(instr_ldconst);
-            currentCFG->current_bb->add_IRInstr(instr_add);
-        }
-        else if (ctx->unaryOperator()->DECREMENT() != nullptr)
+        visit(ctx->expression());
+        Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_neg);
+    }
+    else if (ctx->unaryOperator()->NOT() != nullptr)
+    {
+        visit(ctx->expression());
+        Instr_not *instr_not = new Instr_not(currentCFG->current_bb, _INT, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_not);
+    }
+    else if (ctx->unaryOperator()->INCREMENT() != nullptr)
+    {
+        string tmp_un = currentCFG->create_new_tempvar(_INT);
+        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
+        currentCFG->current_bb->add_IRInstr(instr_ldconst);
+        Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
+        currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
+        visit(ctx->expression());
+        Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp_un, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_add);
     }
     else if (ctx->unaryOperator()->DECREMENT() != nullptr)
     {
-        string tmp = currentCFG->create_new_tempvar(_INT);
-        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
-        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
-        visit(ctx->expression());
-        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
-        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
+        string tmp_un = currentCFG->create_new_tempvar(_INT);
+        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
+        Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
+        currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
+        visit(ctx->expression());
+        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
     return 0;
@@ -254,31 +255,38 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
 {
     visit(ctx->expression(0));
     string left_tmp_var = currentCFG->create_new_tempvar(_INT);
-    Instr_copy *instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
-    currentCFG->current_bb->add_IRInstr(instr_tmp_copy);
+    Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
     visit(ctx->expression(1));
+    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+
+    /*
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", "!regd");
     currentCFG->current_bb->add_IRInstr(instr_reg_copy);
     Instr_copy *instr_left_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
     currentCFG->current_bb->add_IRInstr(instr_left_copy);
+    */
+
     if (ctx->relationalOperator()->GREATER() != nullptr)
     {
-        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!regd", "!reg", Instr_comp::GreaterThan);
+        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, left_tmp_var, right_tmp_var, Instr_comp::GreaterThan);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     else if (ctx->relationalOperator()->GREATEREQUAL() != nullptr)
     {
-        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!regd", "!reg", Instr_comp::GreaterThanOrEqual);
+        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, left_tmp_var, right_tmp_var, Instr_comp::GreaterThanOrEqual);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     else if (ctx->relationalOperator()->LESS() != nullptr)
     {
-        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!regd", "!reg", Instr_comp::LessThan);
+        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, left_tmp_var, right_tmp_var, Instr_comp::LessThan);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     else if (ctx->relationalOperator()->LESSEQUAL() != nullptr)
     {
-        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!regd", "!reg", Instr_comp::LessThanOrEqual);
+        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, left_tmp_var, right_tmp_var, Instr_comp::LessThanOrEqual);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     return 0;
@@ -286,6 +294,7 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
 {
+    /*
     visit(ctx->expression(0));
     string left_tmp_var = currentCFG->create_new_tempvar(_INT);
     Instr_copy *instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
@@ -294,15 +303,25 @@ antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", "!regd");
     currentCFG->current_bb->add_IRInstr(instr_reg_copy);
     Instr_copy *instr_left_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
-    currentCFG->current_bb->add_IRInstr(instr_left_copy);
+    currentCFG->current_bb->add_IRInstr(instr_left_copy);*/
+
+    visit(ctx->expression(0));
+    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
+    visit(ctx->expression(1));
+    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+
     if (ctx->equalityOperator()->EQUAL() != nullptr)
     {
-        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!regd", "!reg", Instr_comp::Equal);
+        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, left_tmp_var, right_tmp_var, Instr_comp::Equal);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     else if (ctx->equalityOperator()->NOTEQUAL() != nullptr)
     {
-        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!regd", "!reg", Instr_comp::NotEqual);
+        Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, left_tmp_var, right_tmp_var, Instr_comp::NotEqual);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     return 0;

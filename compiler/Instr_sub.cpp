@@ -17,11 +17,28 @@ void Instr_sub::gen_asm(ostream &o)
         {
             var1 = "w1";
         }
+        else
+        {
+            o << "\tldr w4, [sp, #" + to_string(this->bb->cfg->get_var_index(destination)) << "]\t;SUB INSTR\n";
+            var1 = "w4";
+        }
 
-        var2 = "[sp, #" + to_string(this->bb->cfg->get_var_index(subed)) + "]";
+        if (subed == "!reg")
+        {
+            var2 = "w0";
+        }
+        else if (subed == "!regd")
+        {
+            var2 = "w1";
+        }
+        else
+        {
+            o << "\tldr w5, [sp, #" + to_string(this->bb->cfg->get_var_index(subed)) << "]\t;SUB INSTR\n";
+            var2 = "w5";
+        }
 
-        o << "\tldr w2, " << var2 << "\n";
-        o << "\tsub " << var1 << ", " << var1 << ", w2\n";
+        o << "\tsubs " << var1 << ", " << var1 << ", " << var2 << "\t;SUB INSTR\n";
+        // o << "\tmov w0, " << var1 << "\t;ADD INSTR\n";   Normalement on en a pas jamais besoin de cette ligne avec un codeGenoptimisé
     }
     else if (target == "x86")
     {

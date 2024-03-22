@@ -16,7 +16,7 @@ void Instr_ldconst::gen_asm(ostream &o)
         {
             var = "w1";
         }
-        o << "\tmov " << var << ", #" << constant << "\n";
+        o << "\tmov " << var << ", #" << constant << "\t; LD CONST INSTR\n";
     }
     else if (target == "x86")
     {
