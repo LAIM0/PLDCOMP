@@ -69,3 +69,11 @@ Type CFG::get_function_type(string name)
 {
     return FunctionType[name];
 }
+
+void CFG::set_function_table(map<string, Type> function_table){
+    this->FunctionType = function_table;
+}
+
+map<string, Type> CFG::get_function_table(){
+    return this->FunctionType;
+}

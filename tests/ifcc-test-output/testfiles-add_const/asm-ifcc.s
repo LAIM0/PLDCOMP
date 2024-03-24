@@ -5,9 +5,7 @@ main:
 	movl 	$3, %eax
 	movl 	%eax, -8(%rbp)
 	movl 	$2, %eax
-	movl 	-8(%rbp), %edx
-	addl	%eax, %edx
-	movl 	%edx, %eax
+	addl	-8(%rbp), %eax
 	movl 	%eax, -4(%rbp)
 	movl 	-4(%rbp), %eax
 	popq	%rbp

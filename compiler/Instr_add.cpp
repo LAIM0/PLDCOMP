@@ -3,21 +3,14 @@
 using namespace std;
 
 void Instr_add::gen_asm(ostream &o){
-    string var1;
-    if(added == "!reg"){
-        var1 = REG;
-    } else if(added == "!regd"){
-        var1 = REGD;
-    } else {
-        var1 = "-" + to_string(this->bb->cfg->get_var_index(added)) + "(%rbp)";
+    string var1 = getRegister_x86(added);
+    if(var1.length() == 0){
+        var1 = getMemory_x86(added) ;
     }
-    string var2;
-    if(destination == "!reg"){
-        var2 = REG;
-    } else if(destination == "!regd"){
-        var2 = REGD;
-    } else {
-        var2 = "-" + to_string(this->bb->cfg->get_var_index(destination)) + "(%rbp)";
+
+    string var2 = getRegister_x86(destination);
+    if(var2.length() == 0){
+        var2 = getMemory_x86(destination) ;
     }
     o << "\taddl\t"<< var1 << ", " <<  var2 << "\n";
 }

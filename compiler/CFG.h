@@ -40,6 +40,8 @@ class CFG {
 	int get_var_index(string name);
 	Type get_var_type(string name);
 	Type get_function_type(string name);
+	void set_function_table(map<string, Type> function_table);
+	map<string, Type> get_function_table();
 
 	// basic block management
 	string new_BB_name();

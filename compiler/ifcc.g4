@@ -37,7 +37,7 @@ condition_bloc:
 
 loop_bloc: 'while(' expression ')' bloc;
 
-function_call: VAR '(' expression (',' expression)* ')';
+function_call: VAR '(' expression? (',' expression)* ')';
 
 declaration: TYPE ( VAR | affectation);
 

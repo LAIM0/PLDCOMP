@@ -4,31 +4,14 @@ using namespace std;
 
 void Instr_comp::gen_asm(ostream &o)
 {
-    string var1;
-    if (comp_left == "!reg")
-    {
-        var1 = REG;
+    string var1 = getRegister_x86(comp_left);
+    if(var1.length() == 0){
+        var1 = getMemory_x86(comp_left) ;
     }
-    else if (comp_left == "!regd")
-    {
-        var1 = REGD;
-    }
-    else
-    {
-        var1 = "-" + to_string(this->bb->cfg->get_var_index(comp_left)) + "(%rbp)";
-    }
-    string var2;
-    if (comp_right == "!reg")
-    {
-        var2 = REG;
-    }
-    else if (comp_right == "!regd")
-    {
-        var2 = REGD;
-    }
-    else
-    {
-        var2 = "-" + to_string(this->bb->cfg->get_var_index(comp_right)) + "(%rbp)";
+
+    string var2 = getRegister_x86(comp_right);
+    if(var2.length() == 0){
+        var2 = getMemory_x86(comp_right) ;
     }
     o << "\tcmpl\t" << var1 << ", " << var2 << "\n";
     switch (op)
@@ -52,5 +35,5 @@ void Instr_comp::gen_asm(ostream &o)
         o << "\tsetge\t%al\n";
         break;
     }
-    o << "\tmovzbl\t%al, " << REG << "\n";
+    o << "\tmovzbl\t%al, " << getRegister_x86("!reg") << "\n";
 }

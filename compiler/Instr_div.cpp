@@ -4,13 +4,9 @@ using namespace std;
 
 void Instr_div::gen_asm(ostream &o)
 {   
-    string var;
-    if(destination == "!reg"){
-        var = REG;
-    } else if(destination == "!regd"){
-        var = REGD;
-    } else {
-        var = "-" + to_string(this->bb->cfg->get_var_index(destination)) + "(%rbp)";
+    string var = getRegister_x86(divfactor);
+    if(var.length() == 0){
+        var = getMemory_x86(divfactor) ;
     }
     o << "\tcltd\n\tidivl \t" << var << "\n";
 }

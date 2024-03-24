@@ -3,13 +3,9 @@
 using namespace std;
 
 void Instr_neg::gen_asm(ostream &o){
-    string var;
-    if(source == "!reg"){
-        var = REG;
-    } else if(source == "!regd"){
-        var = REGD;
-    } else {
-        var = "-" + to_string(this->bb->cfg->get_var_index(source)) + "(%rbp)";
+    string var = getRegister_x86(source);
+    if(var.length() == 0){
+        var = getMemory_x86(source) ;
     }
     o << "\tnegl\t"<< var <<"\n";
 }

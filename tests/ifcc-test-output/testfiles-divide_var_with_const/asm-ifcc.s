@@ -7,9 +7,8 @@ main:
 	movl 	$12, %eax
 	movl 	%eax, -16(%rbp)
 	movl 	-8(%rbp), %eax
-	movl 	-16(%rbp), %edx
 	movl 	%eax, -12(%rbp)
-	movl 	%edx, %eax
+	movl 	-16(%rbp), %eax
 	cltd
 	idivl 	-12(%rbp)
 	movl 	%eax, -4(%rbp)

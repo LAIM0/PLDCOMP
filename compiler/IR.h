@@ -24,8 +24,9 @@ class IRInstr {
 	
 	/** Actual code generation */
 	virtual void gen_asm(ostream &o) = 0; /**< x86 assembly code generation for this IR instruction */
-	const string REG = "%eax";
-	const string REGD = "%edx";
+	string getRegister_x86(string register_key);
+	string getMemory_x86(string var);
+
 	
  protected:
 	BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */

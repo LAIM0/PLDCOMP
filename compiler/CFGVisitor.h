@@ -14,6 +14,7 @@
 #include "Instr_div.h"
 #include "Instr_ldconst.h"
 #include "Instr_copy.h"
+#include "Instr_call.h"
 #include "Type.h"
 #include "CFG.h"
 #include "BasicBlock.h"
@@ -38,7 +39,7 @@ public:
     virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext * ctx) override;
     virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext * ctx) override;
     virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext * ctx) override;
-
+    virtual antlrcpp::Any visitFunction_call(ifccParser::Function_callContext * ctx) override;
 
 private:
     CFG *currentCFG;
