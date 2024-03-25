@@ -1,0 +1,3 @@
+Variable a has already been declared
+
+exit status: 1

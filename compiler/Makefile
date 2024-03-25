@@ -18,10 +18,24 @@ OBJECTS=build/ifccBaseVisitor.o \
 	build/ifccVisitor.o \
 	build/ifccParser.o \
 	build/main.o \
-	build/CodeGenVisitor.o \
-	build/VariableVisitor.o \
-	build/CodeGenArm.o \
-	build/CodeGenx86.o
+	build/BasicBlock.o \
+	build/CFG.o \
+	build/CFGVisitor.o \
+	build/IR.o \
+	build/Type.o \
+	build/Instr_copy.o \
+	build/Instr_neg.o \
+	build/Instr_not.o \
+	build/Instr_add.o \
+	build/Instr_ldconst.o \
+	build/Instr_sub.o \
+	build/Instr_mult.o \
+	build/Instr_div.o \
+	build/Instr_and.o \
+	build/Instr_or.o \
+	build/Instr_xor.o  \
+	build/Instr_comp.o \
+	build/Instr_call.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build

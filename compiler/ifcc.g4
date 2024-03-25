@@ -6,43 +6,29 @@ prog: function_declaration*;
 
 bloc: '{' statement* '}';
 
-expression: orExpression;
+expression : expression multOperator expression # mult
+    | expression addOperator expression # add
+    | expression bitShiftOperator expression # bitshift
+    | expression relationalOperator expression # relational
+    | expression equalityOperator expression # equality
+    | expression BAND expression # band
+    | expression BXOR expression # bxor 
+    | expression BOR expression # bor 
+    | expression AND expression # and
+    | expression OR expression # or
+    | unaryOperator expression # unary
+    | constante # const
+    | VAR # var
+    | '(' expression ')' # par
+    | function_call # func_call
+    ;
 
-orExpression: andExpression orOperation*;
-orOperation: OR andExpression;
-
-andExpression: borExpression andOperation*;
-andOperation: AND borExpression;
-
-borExpression: bxorExpression borOperation*;
-borOperation: BOR bxorExpression;
-
-bxorExpression: bandExpression bxorOperation*;
-bxorOperation: BXOR bandExpression;
-
-bandExpression: equalExpression bandOperation*;
-bandOperation: BAND equalExpression;
-
-equalExpression: relationalExpression equalOperation*;
-equalOperation: (EQUAL | NOTEQUAL) relationalExpression;
-
-relationalExpression: bitshiftExpression relationalOperation*;
-relationalOperation: (LESSEQUAL | LESS | GREATEREQUAL | GREATER) bitshiftExpression;
-
-bitshiftExpression: addExpression bitshiftOperation*;
-bitshiftOperation: (SHIFTLEFT | SHIFTRIGHT) addExpression;
-
-addExpression: multExpression addOperation*;
-addOperation: (PLUS | MINUS) multExpression;
-
-multExpression: unaryExpression multOperation*;
-multOperation: (MULTIPLY | DIVIDE | MOD) unaryExpression;
-
-unaryExpression: (
-        (INCREMENT | DECREMENT | PLUS | MINUS | NOT | BNOT) primaryExpression
-    )
-    | primaryExpression;
-primaryExpression: VAR | constante | '(' expression ')';
+equalityOperator : EQUAL | NOTEQUAL;
+relationalOperator : LESSEQUAL | LESS | GREATEREQUAL | GREATER;
+bitShiftOperator : LEFTSHIFT | RIGHTSHIFT;
+multOperator : MULTIPLY | DIVIDE | MOD;
+addOperator : PLUS | MINUS;
+unaryOperator : INCREMENT | DECREMENT | PLUS | MINUS | NOT;
 
 condition_bloc:
     'if(' expression ')' bloc ('else if(' expression ')' bloc)* (
@@ -51,9 +37,7 @@ condition_bloc:
 
 loop_bloc: 'while(' expression ')' bloc;
 
-return_stmt: RETURN expression;
-
-function_call: VAR '(' expression (',' expression)* ')';
+function_call: VAR '(' expression? (',' expression)* ')';
 
 declaration: TYPE ( VAR | affectation);
 
@@ -65,18 +49,19 @@ function_declaration:
     TYPE VAR '(' parameter? (',' parameter)* ')' bloc;
 
 statement:
-    return_stmt ';'
-    | declaration ';'
-    | affectation ';'
-    | unaryExpression ';'
-    | function_call ';'
-    | condition_bloc
-    | loop_bloc;
+    RETURN expression';' # return_stmt
+    | declaration ';'# declaration_stmt
+    | affectation ';' #affectation_stmt
+    | unaryOperator expression ';' # unary_stmt
+    | function_call ';' # func_call_stmt
+    | condition_bloc # condition
+    | loop_bloc # loop
+    ;
 
 constante: NUMBER | CHAR;
 
-SHIFTRIGHT: '>>';
-SHIFTLEFT: '<<';
+RIGHTSHIFT: '>>';
+LEFTSHIFT: '<<';
 MULTIPLY: '*';
 DIVIDE: '/';
 MOD: '%';
@@ -101,7 +86,7 @@ BNOT: '~';
 RETURN: 'return';
 TYPE: 'int' | 'char';
 NUMBER: MINUS? [0-9]+;
-CHAR: [a-zA-Z][0-9a-zA-Z_];
+CHAR: '\''[0-9a-zA-Z_]+'\'';
 COMMENT: '/*' .*? '*/' -> skip;
 DIRECTIVE: '#' .*? '\n' -> skip;
 WS: [ \t\r\n] -> channel(HIDDEN);

@@ -1,7 +1,11 @@
-/* Type your code here, or load an example. */
+<<<<<<< HEAD
 int main(){
-    int x = 2;
-    int y = 3;
-    int z = x;
-    return z;
+    int y =  8 + 4;
+    return y;
+=======
+int main()
+{
+    int x = 67;
+    return x;
+>>>>>>> Conversion-ASM-to-ARM64
 }

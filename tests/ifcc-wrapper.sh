@@ -15,10 +15,10 @@
 
 # Warning: you have to forward the exit status of your compiler back to the harness
 
-DESTNAME=$1
-SOURCENAME=$2
+DESTNAME=$2
+SOURCENAME=$3
 
-$(dirname $0)/../compiler/ifcc $SOURCENAME >$DESTNAME
+$(dirname $0)/../compiler/ifcc --target=$1 $SOURCENAME >$DESTNAME
 retcode=$?
 
 # forward exit status of the compiler
