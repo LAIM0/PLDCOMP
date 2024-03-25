@@ -108,3 +108,7 @@ map<string, Type> CFG::get_function_table()
 {
     return this->FunctionType;
 }
+
+string CFG::new_BB_name(){
+    return "LB" + to_string(this->nextBBnumber++);
+}

@@ -2,6 +2,7 @@
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
+.main:
 	movl 	$8, %eax
 	movl 	%eax, -12(%rbp)
 	movl 	$2, %eax

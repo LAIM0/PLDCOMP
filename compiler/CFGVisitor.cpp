@@ -50,7 +50,6 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     }
     this->visitChildren(ctx);
 
-    currentCFG->add_bb(bbepilogue);
 
     currentCFG->assign_var_index();
 
@@ -120,7 +119,6 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 {
     // var which we affect the value
     std::string var = ctx->VAR()->getText();
-
     if (currentCFG->get_var_type(ctx->VAR()->getText()) == 0)
     {
         std::cerr << "Variable " << ctx->VAR()->getText() << " has not been declared" << std::endl;
@@ -491,51 +489,59 @@ antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext * ctx){
     // Visit test expression
+    string cmp_var = currentCFG->create_new_tempvar(_INT);
+    Instr_ldconst * instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
+    currentCFG->current_bb->add_IRInstr(instr_ldconst);
+    Instr_copy * instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_cmp_var_copy);
+
     visit(ctx->expression(0));
 
-    // Créer une nouvelle variable temporaire pour stocker le résultat de l'expression
+    Instr_comp * instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
+    currentCFG->current_bb->add_IRInstr(instr_comp);
     string test_var = currentCFG->create_new_tempvar(_INT);
-
-    // Générer une instruction de copie pour stocker le résultat de l'expression dans la variable temporaire
     Instr_copy * instr_test_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", test_var);
     currentCFG->current_bb->add_IRInstr(instr_test_var_copy);
 
-    // Créer les blocs de base pour le "then" et le "else"
-    BasicBlock * thenBb = new BasicBlock(currentCFG, "trueCode");
-    BasicBlock * elseBb = new BasicBlock(currentCFG, "falseCode");
-    BasicBlock * endIfBb = new BasicBlock(currentCFG, "endIf"); // Ajout du bloc de fin
+    BasicBlock * thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock * elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock * endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name()); 
+    currentCFG->add_bb(thenBb);
+    currentCFG->add_bb(elseBb);
+    currentCFG->add_bb(endIfBb);
 
-    // Connecter le bloc courant au bloc de test
     BasicBlock * testBb = currentCFG->current_bb;
-    testBb->test_var_name = test_var;
 
-    // Connecter les blocs de test, "then", et "else"
     testBb->exit_true = thenBb;
     testBb->exit_false = elseBb;
 
-    // Visiter le bloc de code correspondant à la clause "then"
-    currentCFG->current_bb = thenBb;
-    visit(ctx->bloc(0)); // Supposant qu'il y a toujours un bloc pour la clause "then"
+    Instr_jump * instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
+    currentCFG->current_bb->add_IRInstr(instr_jump_true);
+    Instr_jump * instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
+    currentCFG->current_bb->add_IRInstr(instr_jump_false);
 
-    // Connecter le dernier bloc de la clause "then" au bloc de fin de l'instruction "if"
+
+    currentCFG->current_bb = thenBb;
+    visitChildren(ctx->bloc(0)); 
+
     BasicBlock * thenLastBb = currentCFG->current_bb;
     thenLastBb->exit_true = endIfBb;
     thenLastBb->exit_false = nullptr;
+    Instr_jump * instr_jump_true_endif = new Instr_jump(thenBb, endIfBb);
+    currentCFG->current_bb->add_IRInstr(instr_jump_true_endif);
 
-    // Traiter la clause "else" si elle est présente
     if (ctx->bloc().size() > 1) {
-        // Visiter le bloc de code correspondant à la clause "else"
         currentCFG->current_bb = elseBb;
-        visit(ctx->bloc(1)); // Supposant qu'il y a toujours un bloc pour la clause "else"
+        visitChildren(ctx->bloc(1)); 
 
-        // Connecter le dernier bloc de la clause "else" au bloc de fin de l'instruction "if"
         BasicBlock * elseLastBB = currentCFG->current_bb;
         elseLastBB->exit_true = endIfBb;
         elseLastBB->exit_false = nullptr;
+
+        Instr_jump * instr_jump_false_endif = new Instr_jump(elseBb, endIfBb);
+        currentCFG->current_bb->add_IRInstr(instr_jump_false_endif);
     }
 
-    // Mettre à jour le bloc courant pour le bloc de fin de l'instruction "if"
     currentCFG->current_bb = endIfBb;
     return 0;
 }
-

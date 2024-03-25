@@ -15,6 +15,7 @@
 #include "Instr_ldconst.h"
 #include "Instr_copy.h"
 #include "Instr_call.h"
+#include "Instr_jump.h"
 #include "Type.h"
 #include "CFG.h"
 #include "BasicBlock.h"

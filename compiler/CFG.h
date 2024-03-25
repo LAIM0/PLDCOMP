@@ -54,7 +54,7 @@ public:
 	map <string, int> SymbolIndex; /**< part of the symbol table  */
 	map<string, Type> FunctionType;
 	int nextFreeSymbolIndex = 0; /**< to allocate new symbols in the symbol table */
-	int nextBBnumber; /**< just for naming */
+	int nextBBnumber = 0; /**< just for naming */
 	string cfgName;
 	vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
 };
