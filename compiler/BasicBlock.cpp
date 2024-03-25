@@ -3,6 +3,7 @@
 
 void BasicBlock::gen_asm(ostream &o)
 {
+    o << "." << label << ":\n";
     for (auto instr : instrs)
     {
         instr->gen_asm(o);
