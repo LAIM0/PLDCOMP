@@ -31,8 +31,8 @@ addOperator : PLUS | MINUS;
 unaryOperator : INCREMENT | DECREMENT | PLUS | MINUS | NOT;
 
 condition_bloc:
-    'if(' expression ')' bloc ('else if(' expression ')' bloc)* (
-        'else' bloc
+    IF '(' expression ')' bloc ( ELSEIF '(' expression ')' bloc)* (
+        ELSE bloc
     )?;
 
 loop_bloc: 'while(' expression ')' bloc;
@@ -83,6 +83,9 @@ OR: '||';
 EGAL: '=';
 NOT: '!';
 BNOT: '~';
+IF : 'if';
+ELSEIF : 'else if';
+ELSE : 'else';
 RETURN: 'return';
 TYPE: 'int' | 'char';
 NUMBER: MINUS? [0-9]+;

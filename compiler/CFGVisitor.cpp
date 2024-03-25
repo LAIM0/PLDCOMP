@@ -50,7 +50,6 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     }
     this->visitChildren(ctx);
 
-
     currentCFG->assign_var_index();
 
     // Generate the asm of the function
@@ -487,60 +486,89 @@ antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
     return 0;
 }
 
-antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext * ctx){
+antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext *ctx)
+{
     // Visit test expression
     string cmp_var = currentCFG->create_new_tempvar(_INT);
-    Instr_ldconst * instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
+    Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
     currentCFG->current_bb->add_IRInstr(instr_ldconst);
-    Instr_copy * instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
+    Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
     currentCFG->current_bb->add_IRInstr(instr_cmp_var_copy);
 
     visit(ctx->expression(0));
 
-    Instr_comp * instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
+    Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
     currentCFG->current_bb->add_IRInstr(instr_comp);
     string test_var = currentCFG->create_new_tempvar(_INT);
-    Instr_copy * instr_test_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", test_var);
-    currentCFG->current_bb->add_IRInstr(instr_test_var_copy);
 
-    BasicBlock * thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock * elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock * endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name()); 
+    BasicBlock *thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock *elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock *endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     currentCFG->add_bb(thenBb);
     currentCFG->add_bb(elseBb);
-    currentCFG->add_bb(endIfBb);
 
-    BasicBlock * testBb = currentCFG->current_bb;
+    BasicBlock *testBb = currentCFG->current_bb;
 
     testBb->exit_true = thenBb;
     testBb->exit_false = elseBb;
 
-    Instr_jump * instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
+    Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
     currentCFG->current_bb->add_IRInstr(instr_jump_true);
-    Instr_jump * instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
+    Instr_jump *instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
     currentCFG->current_bb->add_IRInstr(instr_jump_false);
 
-
     currentCFG->current_bb = thenBb;
-    visitChildren(ctx->bloc(0)); 
+    visitChildren(ctx->bloc(0));
 
-    BasicBlock * thenLastBb = currentCFG->current_bb;
-    thenLastBb->exit_true = endIfBb;
-    thenLastBb->exit_false = nullptr;
-    Instr_jump * instr_jump_true_endif = new Instr_jump(thenBb, endIfBb);
+    Instr_jump *instr_jump_true_endif = new Instr_jump(thenBb, endIfBb);
     currentCFG->current_bb->add_IRInstr(instr_jump_true_endif);
 
-    if (ctx->bloc().size() > 1) {
-        currentCFG->current_bb = elseBb;
-        visitChildren(ctx->bloc(1)); 
+    currentCFG->current_bb = testBb;
 
-        BasicBlock * elseLastBB = currentCFG->current_bb;
-        elseLastBB->exit_true = endIfBb;
-        elseLastBB->exit_false = nullptr;
+    int bloc_index = 1;
+    if (ctx->ELSEIF().size() > 0)
+    {
+        for (auto else_if : ctx->ELSEIF())
+        {
+            currentCFG->current_bb = currentCFG->current_bb->exit_false;
+            visit(ctx->expression(bloc_index));
+            Instr_comp *instr_elseif_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
+            currentCFG->current_bb->add_IRInstr(instr_elseif_comp);
+            string elseif_test_var = currentCFG->create_new_tempvar(_INT);
 
-        Instr_jump * instr_jump_false_endif = new Instr_jump(elseBb, endIfBb);
+            BasicBlock *elseIfThenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+            BasicBlock *elseIfElseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+            currentCFG->add_bb(elseIfThenBb);
+            currentCFG->add_bb(elseIfElseBb);
+
+            BasicBlock * elseIfTestBb = currentCFG->current_bb;
+
+            elseIfTestBb->exit_true = elseIfThenBb;
+            elseIfTestBb->exit_false = elseIfElseBb;
+
+            Instr_jump *instr_elseif_jump_true = new Instr_jump(elseIfTestBb, elseIfTestBb->exit_true, "e");
+            currentCFG->current_bb->add_IRInstr(instr_elseif_jump_true);
+            Instr_jump *instr_elseif_jump_false = new Instr_jump(elseIfTestBb, elseIfTestBb->exit_false);
+            currentCFG->current_bb->add_IRInstr(instr_elseif_jump_false);
+
+            currentCFG->current_bb = elseIfThenBb;
+            visitChildren(ctx->bloc(bloc_index));
+            Instr_jump *instr_elseif_jump_true_endif = new Instr_jump(elseIfThenBb, endIfBb);
+
+            currentCFG->current_bb->add_IRInstr(instr_elseif_jump_true_endif);
+
+            currentCFG->current_bb = elseIfTestBb;
+            bloc_index++;
+        }
+    }
+    if (ctx->ELSE() != nullptr)
+    {
+        currentCFG->current_bb = currentCFG->current_bb->exit_false;
+        visitChildren(ctx->bloc(bloc_index));
+        Instr_jump *instr_jump_false_endif = new Instr_jump(currentCFG->current_bb, endIfBb);
         currentCFG->current_bb->add_IRInstr(instr_jump_false_endif);
     }
+    currentCFG->add_bb(endIfBb);
 
     currentCFG->current_bb = endIfBb;
     return 0;
