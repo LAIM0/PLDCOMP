@@ -36,10 +36,11 @@ public:
     virtual antlrcpp::Any visitBor(ifccParser::BorContext *ctx) override;
     virtual antlrcpp::Any visitBxor(ifccParser::BxorContext *ctx) override;
     virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *ctx) override;
-    virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext *ctx) override;
-    virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext *ctx) override;
-    virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *ctx) override;
-    virtual antlrcpp::Any visitFunction_call(ifccParser::Function_callContext *ctx) override;
+    virtual antlrcpp::Any visitRelational(ifccParser::RelationalContext * ctx) override;
+    virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext * ctx) override;
+    virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext * ctx) override;
+    virtual antlrcpp::Any visitFunction_call(ifccParser::Function_callContext * ctx) override;
+    virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext * ctx) override;
 
     // Flag management
     void setTargetFlag(string target_architecture);

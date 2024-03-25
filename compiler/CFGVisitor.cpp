@@ -488,3 +488,54 @@ antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
     }
     return 0;
 }
+
+antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext * ctx){
+    // Visit test expression
+    visit(ctx->expression(0));
+
+    // Créer une nouvelle variable temporaire pour stocker le résultat de l'expression
+    string test_var = currentCFG->create_new_tempvar(_INT);
+
+    // Générer une instruction de copie pour stocker le résultat de l'expression dans la variable temporaire
+    Instr_copy * instr_test_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", test_var);
+    currentCFG->current_bb->add_IRInstr(instr_test_var_copy);
+
+    // Créer les blocs de base pour le "then" et le "else"
+    BasicBlock * thenBb = new BasicBlock(currentCFG, "trueCode");
+    BasicBlock * elseBb = new BasicBlock(currentCFG, "falseCode");
+    BasicBlock * endIfBb = new BasicBlock(currentCFG, "endIf"); // Ajout du bloc de fin
+
+    // Connecter le bloc courant au bloc de test
+    BasicBlock * testBb = currentCFG->current_bb;
+    testBb->test_var_name = test_var;
+
+    // Connecter les blocs de test, "then", et "else"
+    testBb->exit_true = thenBb;
+    testBb->exit_false = elseBb;
+
+    // Visiter le bloc de code correspondant à la clause "then"
+    currentCFG->current_bb = thenBb;
+    visit(ctx->bloc(0)); // Supposant qu'il y a toujours un bloc pour la clause "then"
+
+    // Connecter le dernier bloc de la clause "then" au bloc de fin de l'instruction "if"
+    BasicBlock * thenLastBb = currentCFG->current_bb;
+    thenLastBb->exit_true = endIfBb;
+    thenLastBb->exit_false = nullptr;
+
+    // Traiter la clause "else" si elle est présente
+    if (ctx->bloc().size() > 1) {
+        // Visiter le bloc de code correspondant à la clause "else"
+        currentCFG->current_bb = elseBb;
+        visit(ctx->bloc(1)); // Supposant qu'il y a toujours un bloc pour la clause "else"
+
+        // Connecter le dernier bloc de la clause "else" au bloc de fin de l'instruction "if"
+        BasicBlock * elseLastBB = currentCFG->current_bb;
+        elseLastBB->exit_true = endIfBb;
+        elseLastBB->exit_false = nullptr;
+    }
+
+    // Mettre à jour le bloc courant pour le bloc de fin de l'instruction "if"
+    currentCFG->current_bb = endIfBb;
+    return 0;
+}
+
