@@ -1,3 +1,0 @@
-Variable x has not been declared
-
-exit status: 1

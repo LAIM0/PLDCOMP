@@ -1,6 +1,0 @@
-int main(){
-    int x = 1;
-    int y = 0;
-    int t =  y >= x;
-    return t;
-}

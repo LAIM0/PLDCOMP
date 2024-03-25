@@ -5,7 +5,7 @@ using namespace std;
 void Instr_ldconst::gen_asm(ostream &o)
 {
     string target = this->bb->cfg->target_architecture;
-    string var;
+    string var = "w0";
     if (target == "arm")
     {
         if (destination == "!reg")
@@ -17,6 +17,11 @@ void Instr_ldconst::gen_asm(ostream &o)
             var = "w1";
         }
         o << "\tmov " << var << ", #" << constant << "\n";
+        if (destination != "!reg" || destination != "!regd") {
+            var = "w0";
+//            o << "\tmov " << var << ", #" << constant << "\n";
+            o << "\tstr w0, [sp, #" << to_string(this->bb->cfg->get_var_index(destination)) << "]\n";
+        }
     }
     else if (target == "x86")
     {

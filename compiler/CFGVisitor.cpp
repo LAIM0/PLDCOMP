@@ -199,20 +199,18 @@ antlrcpp::Any CFGVisitor::visitBxor(ifccParser::BxorContext *ctx)
 }
 
 antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
-    antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
+//    antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
 {
-    if (ctx->unaryOperator()->MINUS() != nullptr)
-    {
         if (ctx->unaryOperator()->MINUS() != nullptr)
         {
             visit(ctx->expression());
             Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
-            Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
+//            Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
             currentCFG->current_bb->add_IRInstr(instr_neg);
         }
-        else if (ctx->unaryOperator()->NOT() != nullptr)
-        {
-        }
+//        else if (ctx->unaryOperator()->NOT() != nullptr)
+//        {
+//        }
         else if (ctx->unaryOperator()->NOT() != nullptr)
         {
             visit(ctx->expression());
@@ -225,20 +223,19 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
             Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
             visit(ctx->expression());
             Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
-            Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
+//            Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp, "!reg");
             currentCFG->current_bb->add_IRInstr(instr_ldconst);
             currentCFG->current_bb->add_IRInstr(instr_add);
         }
-        else if (ctx->unaryOperator()->DECREMENT() != nullptr)
-    }
+//        else if (ctx->unaryOperator()->DECREMENT() != nullptr)
     else if (ctx->unaryOperator()->DECREMENT() != nullptr)
     {
         string tmp = currentCFG->create_new_tempvar(_INT);
         Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
-        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
+//        Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, tmp, "1");
         visit(ctx->expression());
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
-        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
+//        Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
