@@ -18,15 +18,44 @@ void CFG::gen_asm(ostream &o)
 
 void CFG::gen_asm_prologue(ostream &o)
 {
-    o << ".globl "<< cfgName << "\n";
-    o << cfgName <<":\n";
-    o << "\tpushq	%rbp\n"
-      << "\tmovq	%rsp, %rbp\n";
+
+    string target = this->target_architecture;
+    int nbVar = this->SymbolType.size();
+    if (target == "x86")
+    {
+        o << ".globl " << cfgName << "\n";
+        o << cfgName << ":\n";
+        o << "\tpushq	%rbp\n"
+          << "\tmovq	%rsp, %rbp\n";
+    }
+    else if (target == "arm")
+    {
+        o << "\t.section\t__TEXT,__text,regular,pure_instructions\n";
+        o << "\t.globl\t_main\n";
+        o << "\t.p2align\t2\n";
+        o << "_main:\n";
+        o << "\t.cfi_startproc\n";
+        o << "\tsub	sp, sp, #" << nbVar / 4 * 16 + 16 << "\n";
+        o << "\t.cfi_def_cfa_offset " << nbVar / 4 * 16 + 16 << "\n";
+        o << "\tstr	wzr, [sp, #" << nbVar / 4 * 16 + 12 << "]\n";
+    }
 }
 
 void CFG::gen_asm_epilogue(ostream &o)
 {
-    o << "\tpopq	%rbp\n\tret\n";
+    string target = this->target_architecture;
+    int nbVar = this->SymbolType.size();
+    if (target == "x86")
+    {
+        o << "\tpopq	%rbp\n\tret\n";
+    }
+    else if (target == "arm")
+    {
+        o << "\tadd	sp, sp, #" << nbVar / 4 * 16 + 16 << "\n";
+        o << "\tret\n";
+        o << "\t.cfi_endproc\n";
+        o << "\n.subsections_via_symbols\n";
+    }
 }
 
 void CFG::assign_var_index()
@@ -70,10 +99,12 @@ Type CFG::get_function_type(string name)
     return FunctionType[name];
 }
 
-void CFG::set_function_table(map<string, Type> function_table){
+void CFG::set_function_table(map<string, Type> function_table)
+{
     this->FunctionType = function_table;
 }
 
-map<string, Type> CFG::get_function_table(){
+map<string, Type> CFG::get_function_table()
+{
     return this->FunctionType;
 }

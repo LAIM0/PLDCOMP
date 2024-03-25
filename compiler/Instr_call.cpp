@@ -3,6 +3,11 @@
 
 using namespace std;
 
-void Instr_call::gen_asm(ostream &o){
-    o << "\tcall \t" << function <<"\n";
+void Instr_call::gen_asm(ostream &o)
+{
+    string target = this->bb->cfg->target_architecture;
+    if (target == "x86")
+    {
+        o << "\tcall \t" << function << "\n";
+    }
 }
