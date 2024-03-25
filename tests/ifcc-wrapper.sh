@@ -18,7 +18,7 @@
 DESTNAME=$2
 SOURCENAME=$3
 
-$(dirname $0)/../compiler/ifcc --target=$1 $SOURCENAME >$DESTNAME
+$(dirname $0)/../compiler/ifcc --target=$1 $SOURCENAME > $DESTNAME
 retcode=$?
 
 # forward exit status of the compiler

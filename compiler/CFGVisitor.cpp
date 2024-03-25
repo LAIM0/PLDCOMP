@@ -14,14 +14,21 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declarationContext *ctx)
 {
-
-    map<string, Type> FunctionTable = currentCFG->get_function_table();
-
-    // Create new CFG, and give him the functions created before
+    map<string, Type> FunctionTable;
     string function_name = ctx->VAR()->getText();
-    CFG *cfg = new CFG(function_name, this->target_architecture);
-    currentCFG = cfg;
-    currentCFG->set_function_table(FunctionTable);
+    // Create new CFG, and give him the functions created before
+    if (currentCFG != nullptr)
+    {
+        FunctionTable = currentCFG->get_function_table();
+        CFG *cfg = new CFG(function_name, this->target_architecture);
+        currentCFG = cfg;
+        currentCFG->set_function_table(FunctionTable);
+    }
+    else
+    {
+        CFG *cfg = new CFG(function_name, this->target_architecture);
+        currentCFG = cfg;
+    }
 
     currentCFG->add_to_function_table(function_name, TypeClass::getType(ctx->TYPE()->getText()));
     BasicBlock *bbepilogue = new BasicBlock(currentCFG, "epilogue");
