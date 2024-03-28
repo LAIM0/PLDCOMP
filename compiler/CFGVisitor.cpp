@@ -87,17 +87,25 @@ antlrcpp::Any CFGVisitor::visitReturn_stmt(ifccParser::Return_stmtContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
 {
+    std::string varName = ctx->VAR()->getText();
+    std::string varType = ctx->TYPE()->getText();
+    int pointerLevel = ctx->DEREFERENCE().size();
+
+    if (ctx->DEREFERENCE() != nullptr)
+    {
+        // Case of pointer declaration -> To-do
+    }
     // Case of simple declaration TYPE VAR ";"
     if (ctx->VAR() != nullptr)
     {
         // If the variable has already been declared
-        if (currentCFG->get_var_type(ctx->VAR()->getText()) != 0)
+        if (currentCFG->get_var_type(varName) != 0)
         {
-            std::cerr << "Variable " << ctx->VAR()->getText() << " has already been declared" << std::endl;
+            std::cerr << "Variable " << varName << " has already been declared" << std::endl;
             exit(1);
         }
         // Otherwise, we had to the symbol table with its type
-        currentCFG->add_to_symbol_table(ctx->VAR()->getText(), TypeClass::getType(ctx->TYPE()->getText()));
+        currentCFG->add_to_symbol_table(varName, TypeClass::getType(varType, pointerLevel));
     }
     // Case of declaration with affectation
     else
@@ -379,6 +387,14 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         visit(ctx->expression());
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
+    }
+    else if (ctx->unaryOperator()->DEREFERENCE() != nullptr)
+    {
+        // Opérateur * : To-do
+    }
+    else if (ctx->unaryOperator()->ADDRESSOF() != nullptr)
+    {
+        // Opérateur & : To-do
     }
     return 0;
 }
