@@ -3,7 +3,16 @@
 
 void BasicBlock::gen_asm(ostream &o)
 {
-    o << "." << label << ":\n";
+    string target = cfg->target_architecture;
+    if (target == "x86")
+    {
+        o << "." << label << ":\n";
+    }
+    else if (target == "arm" && label != "main")
+    {
+        o << label << ":\n";
+    }
+
     for (auto instr : instrs)
     {
         instr->gen_asm(o);

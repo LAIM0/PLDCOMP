@@ -10,4 +10,8 @@ void Instr_call::gen_asm(ostream &o)
     {
         o << "\tcall \t" << function << "\n";
     }
+    else if (target == "arm")
+    {
+        o << "\tbl \t_" << function << "\n";
+    }
 }

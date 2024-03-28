@@ -30,14 +30,21 @@ void CFG::gen_asm_prologue(ostream &o)
     }
     else if (target == "arm")
     {
-        o << "\t.section\t__TEXT,__text,regular,pure_instructions\n";
-        o << "\t.globl\t_main\n";
+        o << "\t.globl\t_" << cfgName << "\n";
         o << "\t.p2align\t2\n";
-        o << "_main:\n";
+        o << "_" << cfgName << ":\n";
         o << "\t.cfi_startproc\n";
         o << "\tsub	sp, sp, #" << nbVar / 4 * 16 + 16 << "\n";
         o << "\t.cfi_def_cfa_offset " << nbVar / 4 * 16 + 16 << "\n";
-        o << "\tstr	wzr, [sp, #" << nbVar / 4 * 16 + 12 << "]\n";
+        if (cfgName == "main")
+        {
+            int spvar = (nbVar / 4 * 16 == 0) ? 16 : nbVar / 4 * 16 + 16;
+            o << "\tstp	x29, x30, [sp, #" << spvar << "]\n";
+            o << "\tadd x29, sp, #" << nbVar / 4 * 16 << "\n";
+            o << "\t.cfi_def_cfa w29, 16\n";
+            o << "\t.cfi_offset w30, -8\n";
+            o << "\t.cfi_offset w29, -16\n";
+        }
     }
 }
 
@@ -51,10 +58,14 @@ void CFG::gen_asm_epilogue(ostream &o)
     }
     else if (target == "arm")
     {
+        if (cfgName == "main")
+        {
+            int spvar = (nbVar / 4 * 16 == 0) ? 16 : nbVar / 4 * 16 + 16;
+            o << "\tldp x29, x30, [sp, #" << spvar << "]\n";
+        }
         o << "\tadd	sp, sp, #" << nbVar / 4 * 16 + 16 << "\n";
         o << "\tret\n";
         o << "\t.cfi_endproc\n";
-        o << "\n.subsections_via_symbols\n";
     }
 }
 
@@ -109,6 +120,7 @@ map<string, Type> CFG::get_function_table()
     return this->FunctionType;
 }
 
-string CFG::new_BB_name(){
+string CFG::new_BB_name()
+{
     return "LB" + to_string(this->nextBBnumber++);
 }

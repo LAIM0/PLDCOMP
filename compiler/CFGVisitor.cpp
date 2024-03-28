@@ -541,7 +541,7 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
             currentCFG->add_bb(elseIfThenBb);
             currentCFG->add_bb(elseIfElseBb);
 
-            BasicBlock * elseIfTestBb = currentCFG->current_bb;
+            BasicBlock *elseIfTestBb = currentCFG->current_bb;
 
             elseIfTestBb->exit_true = elseIfThenBb;
             elseIfTestBb->exit_false = elseIfElseBb;

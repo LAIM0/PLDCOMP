@@ -12,14 +12,9 @@ void Instr_copy::gen_asm(ostream &o)
     bool registreDest = false;
     if (target == "arm")
     {
-        if (source == "!reg")
+        var1 = getRegister_arm(source);
+        if (var1.length() != 0)
         {
-            var1 = "w0";
-            registreSource = true;
-        }
-        else if (source == "!regd")
-        {
-            var1 = "w1";
             registreSource = true;
         }
         else
@@ -27,14 +22,9 @@ void Instr_copy::gen_asm(ostream &o)
             var1 = "[sp, #" + to_string(this->bb->cfg->get_var_index(source)) + "]";
         }
 
-        if (destination == "!reg")
+        var2 = getRegister_arm(destination);
+        if (var2.length() != 0)
         {
-            var2 = "w0";
-            registreDest = true;
-        }
-        else if (destination == "!regd")
-        {
-            var2 = "w1";
             registreDest = true;
         }
         else
@@ -58,13 +48,13 @@ void Instr_copy::gen_asm(ostream &o)
     else if (target == "x86")
     {
 
-        string var1 = getRegister_x86(source);
+        var1 = getRegister_x86(source);
         if (var1.length() == 0)
         {
             var1 = getMemory_x86(source);
         }
 
-        string var2 = getRegister_x86(destination);
+        var2 = getRegister_x86(destination);
         if (var2.length() == 0)
         {
             var2 = getMemory_x86(destination);
