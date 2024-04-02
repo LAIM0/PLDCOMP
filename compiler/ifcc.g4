@@ -30,6 +30,9 @@ multOperator : MULTIPLY | DIVIDE | MOD;
 addOperator : PLUS | MINUS;
 unaryOperator : INCREMENT VAR | DECREMENT VAR | PLUS VAR | MINUS VAR | NOT expression;
 
+function_declaration:
+    TYPE VAR '(' parameter? (',' parameter)* ')' bloc;
+
 condition_bloc:
     IF '(' expression ')' bloc ( ELSEIF '(' expression ')' bloc)* (
         ELSE bloc
@@ -44,9 +47,6 @@ declaration: TYPE ( VAR | affectation);
 affectation: VAR EGAL expression;
 
 parameter: TYPE VAR ('=' constante)?;
-
-function_declaration:
-    TYPE VAR '(' parameter? (',' parameter)* ')' bloc;
 
 statement:
     RETURN expression';' # return_stmt

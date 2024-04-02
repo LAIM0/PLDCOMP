@@ -26,7 +26,8 @@ void CFG::gen_asm_prologue(ostream &o)
         o << ".globl " << cfgName << "\n";
         o << cfgName << ":\n";
         o << "\tpushq	%rbp\n"
-          << "\tmovq	%rsp, %rbp\n";
+          << "\tmovq	%rsp, %rbp\n"
+          << "\tsubq \t$" << nbVar / 4 * 16 + 16 << ", %rsp\n";
     }
     else if (target == "arm")
     {
@@ -54,7 +55,9 @@ void CFG::gen_asm_epilogue(ostream &o)
     int nbVar = this->SymbolType.size();
     if (target == "x86")
     {
-        o << "\tpopq	%rbp\n\tret\n";
+        // o << "." << this->cfgName << "_epilogue\n";
+        o << "\taddq $" << nbVar / 4 * 16 + 16 <<", %rsp\n"
+          << "\tpopq	%rbp\n\tret\n";
     }
     else if (target == "arm")
     {

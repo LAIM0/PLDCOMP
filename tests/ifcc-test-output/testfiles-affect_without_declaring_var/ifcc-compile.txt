@@ -1,3 +1,0 @@
-Variable c has not been declared
-
-exit status: 1

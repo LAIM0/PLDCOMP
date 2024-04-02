@@ -1,4 +1,13 @@
-int main(){
-    int y = "5";
-    return y;
+int main()
+{
+    int a = 2;
+    int b;
+    if (a == 2)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

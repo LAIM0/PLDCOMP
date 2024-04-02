@@ -31,7 +31,7 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     }
 
     currentCFG->add_to_function_table(function_name, TypeClass::getType(ctx->TYPE()->getText()));
-    BasicBlock *bbepilogue = new BasicBlock(currentCFG, "epilogue");
+    BasicBlock *bbepilogue = new BasicBlock(currentCFG, function_name + "_epilogue");
     BasicBlock *bbfunc = new BasicBlock(currentCFG, function_name);
     bbepilogue->exit_true = nullptr;
     bbfunc->exit_true = bbepilogue;
@@ -48,8 +48,14 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
         currentCFG->current_bb->add_IRInstr(instr_copy);
         i++;
     }
-    this->visitChildren(ctx);
-
+    visitChildren(ctx);
+    if (!currentCFG->has_return)
+    {
+        // We return 0
+        Instr_ldconst *instr_no_return = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "0");
+        currentCFG->current_bb->add_IRInstr(instr_no_return);
+    }
+    currentCFG->add_bb(bbepilogue);
     currentCFG->assign_var_index();
 
     // Generate the asm of the function
@@ -82,6 +88,9 @@ antlrcpp::Any CFGVisitor::visitFunction_call(ifccParser::Function_callContext *c
 antlrcpp::Any CFGVisitor::visitReturn_stmt(ifccParser::Return_stmtContext *ctx)
 {
     visit(ctx->expression());
+    currentCFG->has_return = true;
+    Instr_jump * instr_return = new Instr_jump(currentCFG->current_bb, currentCFG->current_bb->exit_true);
+    currentCFG->current_bb->add_IRInstr(instr_return);
     return 0;
 }
 
@@ -123,7 +132,6 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
         std::cerr << "Variable " << ctx->VAR()->getText() << " has not been declared" << std::endl;
         exit(1);
     }
-
 
     // visit expression and store the result in our main register !reg
     visit(ctx->expression());
@@ -508,6 +516,7 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
     currentCFG->current_bb->add_IRInstr(instr_comp);
     string test_var = currentCFG->create_new_tempvar(_INT);
 
+    BasicBlock * bbepilogue = currentCFG->current_bb->exit_true; 
     BasicBlock *thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     BasicBlock *elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     BasicBlock *endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
@@ -517,7 +526,9 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
     BasicBlock *testBb = currentCFG->current_bb;
 
     testBb->exit_true = thenBb;
+    thenBb->exit_true = endIfBb;
     testBb->exit_false = elseBb;
+    elseBb->exit_true = endIfBb;
 
     Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
     currentCFG->current_bb->add_IRInstr(instr_jump_true);
@@ -577,12 +588,14 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
     }
     currentCFG->add_bb(endIfBb);
 
+    endIfBb->exit_true = bbepilogue;
     currentCFG->current_bb = endIfBb;
     return 0;
 }
 
 antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
 {
+    BasicBlock * bbepilogue = currentCFG->current_bb->exit_true; 
     // Visit test expression
     BasicBlock *testBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     currentCFG->current_bb = testBb;
@@ -605,8 +618,8 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     currentCFG->add_bb(whileBb);
     currentCFG->add_bb(endWhileBb);
 
-
     testBb->exit_true = whileBb;
+    whileBb->exit_true = bbepilogue;
     testBb->exit_false = endWhileBb;
 
     Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
@@ -620,6 +633,7 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     Instr_jump *instr_jump_end_while = new Instr_jump(whileBb, testBb);
     currentCFG->current_bb->add_IRInstr(instr_jump_end_while);
 
+    endWhileBb->exit_true = bbepilogue;
     currentCFG->current_bb = endWhileBb;
     return 0;
 }

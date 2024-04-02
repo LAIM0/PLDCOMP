@@ -67,6 +67,8 @@ public:
 
     virtual antlrcpp::Any visitUnaryOperator(ifccParser::UnaryOperatorContext *context) = 0;
 
+    virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *context) = 0;
+
     virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext *context) = 0;
 
     virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *context) = 0;
@@ -78,8 +80,6 @@ public:
     virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) = 0;
 
     virtual antlrcpp::Any visitParameter(ifccParser::ParameterContext *context) = 0;
-
-    virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *context) = 0;
 
     virtual antlrcpp::Any visitReturn_stmt(ifccParser::Return_stmtContext *context) = 0;
 

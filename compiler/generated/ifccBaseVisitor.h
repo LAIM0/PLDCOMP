@@ -111,6 +111,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -132,10 +136,6 @@ public:
   }
 
   virtual antlrcpp::Any visitParameter(ifccParser::ParameterContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 

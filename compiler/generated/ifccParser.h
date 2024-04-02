@@ -24,9 +24,9 @@ public:
   enum {
     RuleAxiom = 0, RuleProg = 1, RuleBloc = 2, RuleExpression = 3, RuleEqualityOperator = 4, 
     RuleRelationalOperator = 5, RuleBitShiftOperator = 6, RuleMultOperator = 7, 
-    RuleAddOperator = 8, RuleUnaryOperator = 9, RuleCondition_bloc = 10, 
-    RuleLoop_bloc = 11, RuleFunction_call = 12, RuleDeclaration = 13, RuleAffectation = 14, 
-    RuleParameter = 15, RuleFunction_declaration = 16, RuleStatement = 17, 
+    RuleAddOperator = 8, RuleUnaryOperator = 9, RuleFunction_declaration = 10, 
+    RuleCondition_bloc = 11, RuleLoop_bloc = 12, RuleFunction_call = 13, 
+    RuleDeclaration = 14, RuleAffectation = 15, RuleParameter = 16, RuleStatement = 17, 
     RuleConstante = 18
   };
 
@@ -50,13 +50,13 @@ public:
   class MultOperatorContext;
   class AddOperatorContext;
   class UnaryOperatorContext;
+  class Function_declarationContext;
   class Condition_blocContext;
   class Loop_blocContext;
   class Function_callContext;
   class DeclarationContext;
   class AffectationContext;
   class ParameterContext;
-  class Function_declarationContext;
   class StatementContext;
   class ConstanteContext; 
 
@@ -340,6 +340,22 @@ public:
 
   UnaryOperatorContext* unaryOperator();
 
+  class  Function_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Function_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *TYPE();
+    antlr4::tree::TerminalNode *VAR();
+    BlocContext *bloc();
+    std::vector<ParameterContext *> parameter();
+    ParameterContext* parameter(size_t i);
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Function_declarationContext* function_declaration();
+
   class  Condition_blocContext : public antlr4::ParserRuleContext {
   public:
     Condition_blocContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -428,22 +444,6 @@ public:
   };
 
   ParameterContext* parameter();
-
-  class  Function_declarationContext : public antlr4::ParserRuleContext {
-  public:
-    Function_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *TYPE();
-    antlr4::tree::TerminalNode *VAR();
-    BlocContext *bloc();
-    std::vector<ParameterContext *> parameter();
-    ParameterContext* parameter(size_t i);
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Function_declarationContext* function_declaration();
 
   class  StatementContext : public antlr4::ParserRuleContext {
   public:

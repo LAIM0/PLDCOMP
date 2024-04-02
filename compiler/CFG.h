@@ -48,11 +48,15 @@ public:
 	string new_BB_name();
 	BasicBlock *current_bb;
 	string target_architecture;
+	bool has_return = false;
 
  protected:
 	map <string, Type> SymbolType; /**< part of the symbol table  */
 	map <string, int> SymbolIndex; /**< part of the symbol table  */
-	map<string, Type> FunctionType;
+	map<string, Type> FunctionType {
+        {"putchar", _INT}, 
+        {"getchar", _INT} 
+    };
 	int nextFreeSymbolIndex = 0; /**< to allocate new symbols in the symbol table */
 	int nextBBnumber = 0; /**< just for naming */
 	string cfgName;
