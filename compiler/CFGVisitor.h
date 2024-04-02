@@ -42,6 +42,7 @@ public:
     virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext * ctx) override;
     virtual antlrcpp::Any visitFunction_call(ifccParser::Function_callContext * ctx) override;
     virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext * ctx) override;
+    virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext * ctx) override;
 
     // Flag management
     void setTargetFlag(string target_architecture);

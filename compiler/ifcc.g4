@@ -16,7 +16,7 @@ expression : expression multOperator expression # mult
     | expression BOR expression # bor 
     | expression AND expression # and
     | expression OR expression # or
-    | unaryOperator expression # unary
+    | unaryOperator # unary
     | constante # const
     | VAR # var
     | '(' expression ')' # par
@@ -28,7 +28,7 @@ relationalOperator : LESSEQUAL | LESS | GREATEREQUAL | GREATER;
 bitShiftOperator : LEFTSHIFT | RIGHTSHIFT;
 multOperator : MULTIPLY | DIVIDE | MOD;
 addOperator : PLUS | MINUS;
-unaryOperator : INCREMENT | DECREMENT | PLUS | MINUS | NOT;
+unaryOperator : INCREMENT VAR | DECREMENT VAR | PLUS VAR | MINUS VAR | NOT expression;
 
 condition_bloc:
     IF '(' expression ')' bloc ( ELSEIF '(' expression ')' bloc)* (

@@ -351,7 +351,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     if (ctx->unaryOperator()->MINUS() != nullptr)
     {
         // Visit the expression and store the result in the main register !reg
-        visit(ctx->expression());
+        visit(ctx->unaryOperator()->VAR());
 
         // NEG operator on the main register !reg
         Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
@@ -360,7 +360,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     else if (ctx->unaryOperator()->NOT() != nullptr)
     {
         // Visit the expression and store the result in the main register !reg
-        visit(ctx->expression());
+        visit(ctx->unaryOperator()->expression());
         // NOT operator on the main register !reg
         Instr_not *instr_not = new Instr_not(currentCFG->current_bb, _INT, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_not);
@@ -372,7 +372,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
         currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
-        visit(ctx->expression());
+        visit(ctx->unaryOperator()->VAR());
         Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_add);
     }
@@ -383,7 +383,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
         currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
-        visit(ctx->expression());
+        visit(ctx->unaryOperator()->VAR());
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
@@ -578,5 +578,48 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
     currentCFG->add_bb(endIfBb);
 
     currentCFG->current_bb = endIfBb;
+    return 0;
+}
+
+antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
+{
+    // Visit test expression
+    BasicBlock *testBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    currentCFG->current_bb = testBb;
+    currentCFG->add_bb(testBb);
+
+    string cmp_var = currentCFG->create_new_tempvar(_INT);
+    Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
+    currentCFG->current_bb->add_IRInstr(instr_ldconst);
+    Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
+    currentCFG->current_bb->add_IRInstr(instr_cmp_var_copy);
+
+    visit(ctx->expression());
+
+    Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
+    currentCFG->current_bb->add_IRInstr(instr_comp);
+    string test_var = currentCFG->create_new_tempvar(_INT);
+
+    BasicBlock *whileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock *endWhileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    currentCFG->add_bb(whileBb);
+    currentCFG->add_bb(endWhileBb);
+
+
+    testBb->exit_true = whileBb;
+    testBb->exit_false = endWhileBb;
+
+    Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
+    currentCFG->current_bb->add_IRInstr(instr_jump_true);
+    Instr_jump *instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
+    currentCFG->current_bb->add_IRInstr(instr_jump_false);
+
+    currentCFG->current_bb = whileBb;
+    visitChildren(ctx->bloc());
+
+    Instr_jump *instr_jump_end_while = new Instr_jump(whileBb, testBb);
+    currentCFG->current_bb->add_IRInstr(instr_jump_end_while);
+
+    currentCFG->current_bb = endWhileBb;
     return 0;
 }

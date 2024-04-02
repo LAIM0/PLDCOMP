@@ -181,7 +181,6 @@ public:
     UnaryContext(ExpressionContext *ctx);
 
     UnaryOperatorContext *unaryOperator();
-    ExpressionContext *expression();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
@@ -328,10 +327,12 @@ public:
     UnaryOperatorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *INCREMENT();
+    antlr4::tree::TerminalNode *VAR();
     antlr4::tree::TerminalNode *DECREMENT();
     antlr4::tree::TerminalNode *PLUS();
     antlr4::tree::TerminalNode *MINUS();
     antlr4::tree::TerminalNode *NOT();
+    ExpressionContext *expression();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    

@@ -27,11 +27,6 @@ public:
 	string getRegister_x86(string register_key);
 	string getMemory_x86(string var);
 	string getRegister_arm(string register_key);
-
-protected:
-	BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
-	Type getType();
-
 	
  protected:
 	BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
