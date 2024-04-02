@@ -13,6 +13,8 @@ private:
 
 public:
     static Type getType(const std::string& typeName);
+    static std::string getStringFromType(Type type);
 };
+
 
 #endif // TYPE_H

@@ -80,7 +80,7 @@ void Instr_comp::gen_asm(ostream &o)
         {
             right = getMemory_x86(comp_right);
         }
-        cout << "\tcmpl\t" << right << ", " << left << "\n";
+        o << "\tcmpl\t" << right << ", " << left << "\n";
         switch (op)
         {
         case Equal:
