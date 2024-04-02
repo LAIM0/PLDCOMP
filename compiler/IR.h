@@ -30,6 +30,11 @@ public:
 
 protected:
 	BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
+	Type getType();
+
+	
+ protected:
+	BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
 	Type t;
 	Type getType();	
 };
