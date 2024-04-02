@@ -1,4 +1,5 @@
 #include "Type.h"
+#include <iostream>
 
 std::map<std::string, Type> TypeClass::typeMap = {
     {"int", _INT},
@@ -10,6 +11,15 @@ Type TypeClass::getType(const std::string& typeName) {
     if (it != typeMap.end()) {
         return it->second;
     } else {
-        return _INT; // Type par défaut en cas d'entrée non valide
+        return _INT; 
     }
+}
+
+std::string TypeClass::getStringFromType(Type type){
+    for (const auto& pair : typeMap) {
+        if (pair.second == type) {
+            return pair.first; 
+        }
+    }
+    return "";
 }

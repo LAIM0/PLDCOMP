@@ -124,8 +124,15 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
         exit(1);
     }
 
+
     // visit expression and store the result in our main register !reg
     visit(ctx->expression());
+
+    // Type expression_type = currentCFG->current_bb->instrs.back()->getType();
+    // if(expression_type != currentCFG->get_var_type(var)){
+    //     std::cerr << "Wrong type for " << var << endl;
+    //     exit(1);
+    // }
 
     Type var_type = currentCFG->get_var_type(var);
 
@@ -139,17 +146,17 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx)
 {
     // get the type of the constant
-    Type const_type;
+    string const_type;
     if (ctx->constante()->NUMBER() != nullptr)
     {
-        const_type = _INT;
+        const_type = "int";
     }
     else if (ctx->constante()->CHAR() != nullptr)
     {
-        const_type = _CHAR;
+        const_type = "char";
     }
     // Copy the value of the const register !reg into the main register !reg
-    Instr_ldconst *instr = new Instr_ldconst(currentCFG->current_bb, const_type, "!reg", ctx->constante()->getText());
+    Instr_ldconst *instr = new Instr_ldconst(currentCFG->current_bb, TypeClass::getType(const_type), "!reg", ctx->constante()->getText());
     currentCFG->current_bb->add_IRInstr(instr);
     return 0;
 }

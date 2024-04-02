@@ -15,13 +15,12 @@ public:
         GreaterThanOrEqual
     } CompOperator;
 
-    Instr_comp(BasicBlock *bb, Type type, std::string comp_left, std::string comp_right, CompOperator op)
+    Instr_comp(BasicBlock *bb, Type t, std::string comp_left, std::string comp_right, CompOperator op)
         : IRInstr(bb, t), comp_left(comp_left), comp_right(comp_right), op(op){};
 
     virtual void gen_asm(std::ostream &o) override;
 
 private:
-    Type type;
     std::string comp_left;
     std::string comp_right;
     CompOperator op;

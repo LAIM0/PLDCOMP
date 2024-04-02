@@ -87,7 +87,7 @@ IF : 'if';
 ELSEIF : 'else if';
 ELSE : 'else';
 RETURN: 'return';
-TYPE: 'int' | 'char';
+TYPE: 'int' | 'char' | 'void';
 NUMBER: MINUS? [0-9]+;
 CHAR: '\''[0-9a-zA-Z_]+'\'';
 COMMENT: '/*' .*? '*/' -> skip;
