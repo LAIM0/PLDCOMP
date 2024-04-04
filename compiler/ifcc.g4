@@ -28,7 +28,7 @@ relationalOperator : LESSEQUAL | LESS | GREATEREQUAL | GREATER;
 bitShiftOperator : LEFTSHIFT | RIGHTSHIFT;
 multOperator : MULTIPLY | DIVIDE | MOD;
 addOperator : PLUS | MINUS;
-unaryOperator : INCREMENT VAR | DECREMENT VAR | PLUS VAR | MINUS VAR | NOT expression;
+unaryOperator : (INCREMENT  | DECREMENT | PLUS | MINUS | NOT) expression;
 
 loop_bloc: 'while' '(' expression ')' bloc;
 
@@ -44,9 +44,9 @@ condition_bloc:
 
 function_call: VAR '(' expression? (',' expression)* ')';
 
-declaration: TYPE ( VAR | affectation);
+declaration: TYPE ( VAR (',' VAR)* | affectation);
 
-affectation: VAR EGAL expression;
+affectation: VAR (',' VAR)* EGAL expression;
 
 parameter: TYPE VAR ('=' constante)?;
 

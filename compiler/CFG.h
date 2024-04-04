@@ -58,7 +58,10 @@ public:
         {"putchar", _INT}, 
         {"getchar", _INT} 
     };
-	map<string, int> FunctionParams;
+	map<string, int> FunctionParams {
+		{"putchar", 1}, 
+        {"getchar", 0} 
+	};
 	int nextBBnumber = 0; /**< just for naming */
 	string cfgName;
 	vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
