@@ -20,7 +20,7 @@ void CFG::gen_asm_prologue(ostream &o)
 {
 
     string target = this->target_architecture;
-    int nbVar = this->SymbolType.size();
+    int nbVar = this->SymbolIndex.size();
     if (target == "x86")
     {
         o << ".globl " << cfgName << "\n";
@@ -52,7 +52,7 @@ void CFG::gen_asm_prologue(ostream &o)
 void CFG::gen_asm_epilogue(ostream &o)
 {
     string target = this->target_architecture;
-    int nbVar = this->SymbolType.size();
+    int nbVar = this->SymbolIndex.size();
     if (target == "x86")
     {
         // o << "." << this->cfgName << "_epilogue\n";
@@ -74,48 +74,46 @@ void CFG::gen_asm_epilogue(ostream &o)
 
 void CFG::assign_var_index()
 {
-    int number_of_symbols = (int)SymbolType.size();
-    int index = number_of_symbols * 4;
-    for (auto symbols : SymbolType)
-    {
-        SymbolIndex[symbols.first] = index;
-        index -= 4;
+    for(BasicBlock * bb : bbs){
+        int number_of_symbols = (int) bb->SymbolType.size();
+        int index = number_of_symbols * 4;
+        for (auto symbols : bb->SymbolType)
+        {
+            SymbolIndex[symbols.first] = index;
+            index -= 4;
+        }
     }
 }
-void CFG::add_to_symbol_table(string name, Type t)
-{
-    SymbolType[name] = t;
-}
+// void CFG::add_to_symbol_table(string name, Type t)
+// {
+//     SymbolType[name] = t;
+// }
 void CFG::add_to_function_table(string name, Type t)
 {
     FunctionType[name] = t;
 }
 
-string CFG::create_new_tempvar(Type t)
-{
-    string new_tmp = "tmp" + to_string(nextFreeSymbolIndex++);
-    SymbolType[new_tmp] = t;
-    return new_tmp;
-}
+
 
 int CFG::get_var_index(string name)
 {
     return SymbolIndex[name];
 }
 
-Type CFG::get_var_type(string name)
-{
-    return SymbolType[name];
-}
+// Type CFG::get_var_type(string name)
+// {
+//     return SymbolType[name];
+// }
 
 Type CFG::get_function_type(string name)
 {
     return FunctionType[name];
 }
 
-void CFG::set_function_table(map<string, Type> function_table)
+void CFG::set_function_table(map<string, Type> function_table, map<string, int> function_params)
 {
     this->FunctionType = function_table;
+    this->FunctionParams = function_params;
 }
 
 map<string, Type> CFG::get_function_table()
@@ -126,4 +124,16 @@ map<string, Type> CFG::get_function_table()
 string CFG::new_BB_name()
 {
     return "LB" + to_string(this->nextBBnumber++);
+}
+
+map<string, int> CFG::get_function_params_table(){
+    return this->FunctionParams;
+}
+
+int CFG::get_function_params(string name){
+    return this->FunctionParams[name];
+}
+
+void CFG::add_to_function_params(string name, int n){
+    this->FunctionParams[name] = n;
 }

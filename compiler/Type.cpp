@@ -3,7 +3,8 @@
 
 std::map<std::string, Type> TypeClass::typeMap = {
     {"int", _INT},
-    {"char", _CHAR}
+    {"char", _CHAR},
+    {"void", _VOID}
 };
 
 Type TypeClass::getType(const std::string& typeName) {

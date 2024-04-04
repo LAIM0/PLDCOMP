@@ -21,6 +21,7 @@
 #include "BasicBlock.h"
 #include <map>
 #include <vector>
+#include <cstring>
 
 class CFGVisitor : public ifccBaseVisitor
 {

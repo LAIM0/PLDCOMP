@@ -111,15 +111,15 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -155,15 +155,19 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitFunc_call_stmt(ifccParser::Func_call_stmtContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitLoop(ifccParser::LoopContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFunc_call_stmt(ifccParser::Func_call_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFunction_declaration_stmt(ifccParser::Function_declaration_stmtContext *ctx) override {
     return visitChildren(ctx);
   }
 

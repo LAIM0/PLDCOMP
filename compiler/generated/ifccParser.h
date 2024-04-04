@@ -24,10 +24,9 @@ public:
   enum {
     RuleAxiom = 0, RuleProg = 1, RuleBloc = 2, RuleExpression = 3, RuleEqualityOperator = 4, 
     RuleRelationalOperator = 5, RuleBitShiftOperator = 6, RuleMultOperator = 7, 
-    RuleAddOperator = 8, RuleUnaryOperator = 9, RuleFunction_declaration = 10, 
-    RuleCondition_bloc = 11, RuleLoop_bloc = 12, RuleFunction_call = 13, 
-    RuleDeclaration = 14, RuleAffectation = 15, RuleParameter = 16, RuleStatement = 17, 
-    RuleConstante = 18
+    RuleAddOperator = 8, RuleUnaryOperator = 9, RuleLoop_bloc = 10, RuleFunction_declaration = 11, 
+    RuleCondition_bloc = 12, RuleFunction_call = 13, RuleDeclaration = 14, 
+    RuleAffectation = 15, RuleParameter = 16, RuleStatement = 17, RuleConstante = 18
   };
 
   ifccParser(antlr4::TokenStream *input);
@@ -50,9 +49,9 @@ public:
   class MultOperatorContext;
   class AddOperatorContext;
   class UnaryOperatorContext;
+  class Loop_blocContext;
   class Function_declarationContext;
   class Condition_blocContext;
-  class Loop_blocContext;
   class Function_callContext;
   class DeclarationContext;
   class AffectationContext;
@@ -340,6 +339,19 @@ public:
 
   UnaryOperatorContext* unaryOperator();
 
+  class  Loop_blocContext : public antlr4::ParserRuleContext {
+  public:
+    Loop_blocContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ExpressionContext *expression();
+    BlocContext *bloc();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Loop_blocContext* loop_bloc();
+
   class  Function_declarationContext : public antlr4::ParserRuleContext {
   public:
     Function_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -374,19 +386,6 @@ public:
   };
 
   Condition_blocContext* condition_bloc();
-
-  class  Loop_blocContext : public antlr4::ParserRuleContext {
-  public:
-    Loop_blocContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    ExpressionContext *expression();
-    BlocContext *bloc();
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Loop_blocContext* loop_bloc();
 
   class  Function_callContext : public antlr4::ParserRuleContext {
   public:
@@ -504,6 +503,14 @@ public:
     Affectation_stmtContext(StatementContext *ctx);
 
     AffectationContext *affectation();
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Function_declaration_stmtContext : public StatementContext {
+  public:
+    Function_declaration_stmtContext(StatementContext *ctx);
+
+    Function_declarationContext *function_declaration();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
