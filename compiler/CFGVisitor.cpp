@@ -15,14 +15,16 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declarationContext *ctx)
 {
     map<string, Type> FunctionTable;
+    map<string, int> FunctionParams;
     string function_name = ctx->VAR()->getText();
     // Create new CFG, and give him the functions created before
     if (currentCFG != nullptr)
     {
         FunctionTable = currentCFG->get_function_table();
+        FunctionParams = currentCFG->get_function_params_table();
         CFG *cfg = new CFG(function_name, this->target_architecture);
         currentCFG = cfg;
-        currentCFG->set_function_table(FunctionTable);
+        currentCFG->set_function_table(FunctionTable, FunctionParams);
     }
     else
     {
@@ -31,6 +33,7 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     }
 
     currentCFG->add_to_function_table(function_name, TypeClass::getType(ctx->TYPE()->getText()));
+    currentCFG->add_to_function_params(function_name, ctx->parameter().size());
     BasicBlock *bbepilogue = new BasicBlock(currentCFG, function_name + "_epilogue");
     BasicBlock *bbfunc = new BasicBlock(currentCFG, function_name);
     bbepilogue->exit_true = nullptr;
@@ -39,21 +42,24 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     currentCFG->current_bb = bbfunc;
 
     // Handle params memory allocation
+    if(ctx->parameter().size() > 6){
+        cerr << "Sorry, we do not handle functions with more than 6 parameters" << endl;
+        exit(1);
+    }
     int i = 0;
     for (auto param : ctx->parameter())
     {
-        currentCFG->add_to_symbol_table(param->VAR()->getText(), TypeClass::getType(param->TYPE()->getText()));
+        currentCFG->current_bb->SymbolType[param->VAR()->getText()] = TypeClass::getType(param->TYPE()->getText());
         std::string reg = "!reg" + to_string(i);
         Instr_copy *instr_copy = new Instr_copy(currentCFG->current_bb, TypeClass::getType(param->TYPE()->getText()), reg, param->VAR()->getText());
         currentCFG->current_bb->add_IRInstr(instr_copy);
         i++;
     }
     visitChildren(ctx);
-    if (!currentCFG->has_return)
+    if (!currentCFG->has_return && TypeClass::getType(ctx->TYPE()->getText()) != _VOID)
     {
-        // We return 0
-        Instr_ldconst *instr_no_return = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "0");
-        currentCFG->current_bb->add_IRInstr(instr_no_return);
+        cerr << "No return value within the function" << endl;
+        exit(1);
     }
     currentCFG->add_bb(bbepilogue);
     currentCFG->assign_var_index();
@@ -69,10 +75,15 @@ antlrcpp::Any CFGVisitor::visitFunction_call(ifccParser::Function_callContext *c
     string function = ctx->VAR()->getText();
     if (currentCFG->get_function_type(function) == 0)
     {
-        cerr << "No function called " << function << " exists";
+        cerr << "No function called " << function << " exists" << endl;
         exit(1);
     }
     int i = 0;
+    int nb_params = currentCFG->get_function_params(function);
+    if(nb_params != ctx->expression().size()){
+        cerr << "Not enough parameters for the function " << function << endl;
+        exit(1);
+    }
     for (auto expr : ctx->expression())
     {
         visit(expr);
@@ -100,25 +111,25 @@ antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
     if (ctx->VAR() != nullptr)
     {
         // If the variable has already been declared
-        if (currentCFG->get_var_type(ctx->VAR()->getText()) != 0)
+        if (currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] != 0)
         {
             std::cerr << "Variable " << ctx->VAR()->getText() << " has already been declared" << std::endl;
             exit(1);
         }
         // Otherwise, we had to the symbol table with its type
-        currentCFG->add_to_symbol_table(ctx->VAR()->getText(), TypeClass::getType(ctx->TYPE()->getText()));
+        currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] = TypeClass::getType(ctx->TYPE()->getText());
     }
     // Case of declaration with affectation
     else
     {
         // If the variable has already been declared
-        if (currentCFG->get_var_type(ctx->affectation()->VAR()->getText()) != 0)
+        if (currentCFG->current_bb->SymbolType[ctx->affectation()->VAR()->getText()] != 0)
         {
             std::cerr << "Variable " << ctx->affectation()->VAR()->getText() << " has already been declared" << std::endl;
             exit(1);
         }
         // Otherwise, we had to the symbol table with its type
-        currentCFG->add_to_symbol_table(ctx->affectation()->VAR()->getText(), TypeClass::getType(ctx->TYPE()->getText()));
+        currentCFG->current_bb->SymbolType[ctx->affectation()->VAR()->getText()] = TypeClass::getType(ctx->TYPE()->getText());
         visitChildren(ctx);
     }
     return 0;
@@ -127,7 +138,7 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 {
     // var which we affect the value
     std::string var = ctx->VAR()->getText();
-    if (currentCFG->get_var_type(ctx->VAR()->getText()) == 0)
+    if (currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] == 0)
     {
         std::cerr << "Variable " << ctx->VAR()->getText() << " has not been declared" << std::endl;
         exit(1);
@@ -142,7 +153,7 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
     //     exit(1);
     // }
 
-    Type var_type = currentCFG->get_var_type(var);
+    Type var_type = currentCFG->current_bb->SymbolType[var];
 
     // Copy the value of the main register !reg into the variable memory cell
     Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, "!reg", var);
@@ -172,14 +183,14 @@ antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx)
 antlrcpp::Any CFGVisitor::visitVar(ifccParser::VarContext *ctx)
 {
     // if the variable has not been declared before
-    if (currentCFG->get_var_type(ctx->VAR()->getText()) == 0)
+    if (currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] == 0)
     {
         std::cerr << "Variable " << ctx->VAR()->getText() << " has not been declared" << std::endl;
         exit(1);
     }
 
     // Get the type of the variable
-    Type var_type = currentCFG->get_var_type(ctx->VAR()->getText());
+    Type var_type = currentCFG->current_bb->SymbolType[ctx->VAR()->getText()];
 
     // We copy the value in the variable memory into the main register !reg
     Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, ctx->VAR()->getText(), "!reg");
@@ -190,7 +201,7 @@ antlrcpp::Any CFGVisitor::visitVar(ifccParser::VarContext *ctx)
 antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx)
 {
     visit(ctx->expression(0));
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
     visit(ctx->expression(1));
@@ -201,7 +212,7 @@ antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx)
     }
     else if (ctx->addOperator()->MINUS() != nullptr)
     {
-        string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+        string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
         Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
@@ -215,7 +226,7 @@ antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx)
 antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
 {
     visit(ctx->expression(0));
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
     visit(ctx->expression(1));
@@ -226,7 +237,7 @@ antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
     }
     else if (ctx->multOperator()->DIVIDE() != nullptr)
     {
-        string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+        string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
         Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
@@ -236,7 +247,7 @@ antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
     }
     else if (ctx->multOperator()->MOD() != nullptr)
     {
-        string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+        string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
 
@@ -249,7 +260,7 @@ antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
         Instr_mult *instr_mult = new Instr_mult(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_mult);
 
-        string sub_for_mod_tmp_var = currentCFG->create_new_tempvar(_INT);
+        string sub_for_mod_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_copy *instr_sub_for_mod_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", sub_for_mod_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_sub_for_mod_tmp_copy);
 
@@ -267,7 +278,7 @@ antlrcpp::Any CFGVisitor::visitBand(ifccParser::BandContext *ctx)
     visit(ctx->expression(0));
 
     // Create a temporary variable for the left expression
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
@@ -276,7 +287,7 @@ antlrcpp::Any CFGVisitor::visitBand(ifccParser::BandContext *ctx)
     visit(ctx->expression(1));
 
     // Create a temporary variable for the right expression
-    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
@@ -298,7 +309,7 @@ antlrcpp::Any CFGVisitor::visitBor(ifccParser::BorContext *ctx)
     visit(ctx->expression(0));
 
     // Create a temporary variable for the left expression
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
@@ -307,7 +318,7 @@ antlrcpp::Any CFGVisitor::visitBor(ifccParser::BorContext *ctx)
     visit(ctx->expression(1));
 
     // Create a temporary variable for the right expression
-    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
@@ -329,7 +340,7 @@ antlrcpp::Any CFGVisitor::visitBxor(ifccParser::BxorContext *ctx)
     visit(ctx->expression(0));
 
     // Create a temporary variable for the left expression
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
@@ -338,7 +349,7 @@ antlrcpp::Any CFGVisitor::visitBxor(ifccParser::BxorContext *ctx)
     visit(ctx->expression(1));
 
     // Create a temporary variable for the right expression
-    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
@@ -375,7 +386,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     }
     else if (ctx->unaryOperator()->INCREMENT() != nullptr)
     {
-        string tmp_un = currentCFG->create_new_tempvar(_INT);
+        string tmp_un = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
@@ -386,7 +397,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     }
     else if (ctx->unaryOperator()->DECREMENT() != nullptr)
     {
-        string tmp_un = currentCFG->create_new_tempvar(_INT);
+        string tmp_un = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
@@ -409,14 +420,14 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
     visit(ctx->expression(0));
 
     // Create a temporary variable for the left expression
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
 
     // Visit right expression
     visit(ctx->expression(1));
-    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
@@ -456,33 +467,13 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
 {
-    /*
-    visit(ctx->expression(0));
-
-    // Create a temporary variable for the left expression
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
-    Instr_copy *instr_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
-    currentCFG->current_bb->add_IRInstr(instr_tmp_copy);
-    visit(ctx->expression(1));
-
-    // Create a temporary variable for the right expression
-    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
-    // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
-    Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
-    currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
-
-    // Copy the value in the left temporary variable memory into the main register !reg
-    Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
-    currentCFG->current_bb->add_IRInstr(instr_reg_copy);
-    Instr_copy *instr_left_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
-    currentCFG->current_bb->add_IRInstr(instr_left_copy);*/
 
     visit(ctx->expression(0));
-    string left_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
     visit(ctx->expression(1));
-    string right_tmp_var = currentCFG->create_new_tempvar(_INT);
+    string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
@@ -504,7 +495,7 @@ antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
 antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext *ctx)
 {
     // Visit test expression
-    string cmp_var = currentCFG->create_new_tempvar(_INT);
+    string cmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
     currentCFG->current_bb->add_IRInstr(instr_ldconst);
     Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
@@ -514,14 +505,17 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
 
     Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
     currentCFG->current_bb->add_IRInstr(instr_comp);
-    string test_var = currentCFG->create_new_tempvar(_INT);
+    string test_var = currentCFG->current_bb->create_new_tempvar(_INT);
 
     BasicBlock * bbepilogue = currentCFG->current_bb->exit_true; 
-    BasicBlock *thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock *elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock *endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock * thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock * elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock * endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     currentCFG->add_bb(thenBb);
     currentCFG->add_bb(elseBb);
+    thenBb->SymbolType = currentCFG->current_bb->SymbolType;
+    elseBb->SymbolType = currentCFG->current_bb->SymbolType;
+    endIfBb->SymbolType = currentCFG->current_bb->SymbolType;
 
     BasicBlock *testBb = currentCFG->current_bb;
 
@@ -552,7 +546,7 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
             visit(ctx->expression(bloc_index));
             Instr_comp *instr_elseif_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
             currentCFG->current_bb->add_IRInstr(instr_elseif_comp);
-            string elseif_test_var = currentCFG->create_new_tempvar(_INT);
+            string elseif_test_var = currentCFG->current_bb->create_new_tempvar(_INT);
 
             BasicBlock *elseIfThenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
             BasicBlock *elseIfElseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
@@ -601,7 +595,7 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     currentCFG->current_bb = testBb;
     currentCFG->add_bb(testBb);
 
-    string cmp_var = currentCFG->create_new_tempvar(_INT);
+    string cmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
     currentCFG->current_bb->add_IRInstr(instr_ldconst);
     Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
@@ -611,10 +605,12 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
 
     Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
     currentCFG->current_bb->add_IRInstr(instr_comp);
-    string test_var = currentCFG->create_new_tempvar(_INT);
+    string test_var = currentCFG->current_bb->create_new_tempvar(_INT);
 
     BasicBlock *whileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     BasicBlock *endWhileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    whileBb->SymbolType = currentCFG->current_bb->SymbolType;
+    endWhileBb->SymbolType = currentCFG->current_bb->SymbolType;
     currentCFG->add_bb(whileBb);
     currentCFG->add_bb(endWhileBb);
 

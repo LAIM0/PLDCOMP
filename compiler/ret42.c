@@ -1,13 +1,11 @@
 int main()
 {
-    int a = 2;
-    int b;
-    if (a == 2)
-    {
-        return 1;
+    int x = 5;
+    if (x != 0){
+        while(x != 0){
+            x = x - 1;
+        }
     }
-    else
-    {
-        return 0;
-    }
+
+    return x;
 }

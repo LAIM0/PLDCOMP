@@ -23,3 +23,10 @@ void BasicBlock::add_IRInstr(IRInstr *instr)
 {
     instrs.push_back(instr);
 }
+
+string BasicBlock::create_new_tempvar(Type t)
+{
+    string new_tmp = "tmp" + to_string(nextFreeSymbolIndex++);
+    SymbolType[new_tmp] = t;
+    return new_tmp;
+}

@@ -30,6 +30,8 @@ multOperator : MULTIPLY | DIVIDE | MOD;
 addOperator : PLUS | MINUS;
 unaryOperator : INCREMENT VAR | DECREMENT VAR | PLUS VAR | MINUS VAR | NOT expression;
 
+loop_bloc: 'while' '(' expression ')' bloc;
+
 function_declaration:
     TYPE VAR '(' parameter? (',' parameter)* ')' bloc;
 
@@ -38,7 +40,7 @@ condition_bloc:
         ELSE bloc
     )?;
 
-loop_bloc: 'while(' expression ')' bloc;
+
 
 function_call: VAR '(' expression? (',' expression)* ')';
 
@@ -53,9 +55,10 @@ statement:
     | declaration ';'# declaration_stmt
     | affectation ';' #affectation_stmt
     | unaryOperator expression ';' # unary_stmt
-    | function_call ';' # func_call_stmt
     | condition_bloc # condition
     | loop_bloc # loop
+    | function_call ';' # func_call_stmt
+    | function_declaration  # function_declaration_stmt
     ;
 
 constante: NUMBER | CHAR;

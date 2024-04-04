@@ -67,11 +67,11 @@ public:
 
     virtual antlrcpp::Any visitUnaryOperator(ifccParser::UnaryOperatorContext *context) = 0;
 
+    virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *context) = 0;
+
     virtual antlrcpp::Any visitFunction_declaration(ifccParser::Function_declarationContext *context) = 0;
 
     virtual antlrcpp::Any visitCondition_bloc(ifccParser::Condition_blocContext *context) = 0;
-
-    virtual antlrcpp::Any visitLoop_bloc(ifccParser::Loop_blocContext *context) = 0;
 
     virtual antlrcpp::Any visitFunction_call(ifccParser::Function_callContext *context) = 0;
 
@@ -89,11 +89,13 @@ public:
 
     virtual antlrcpp::Any visitUnary_stmt(ifccParser::Unary_stmtContext *context) = 0;
 
-    virtual antlrcpp::Any visitFunc_call_stmt(ifccParser::Func_call_stmtContext *context) = 0;
-
     virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *context) = 0;
 
     virtual antlrcpp::Any visitLoop(ifccParser::LoopContext *context) = 0;
+
+    virtual antlrcpp::Any visitFunc_call_stmt(ifccParser::Func_call_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitFunction_declaration_stmt(ifccParser::Function_declaration_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitConstante(ifccParser::ConstanteContext *context) = 0;
 

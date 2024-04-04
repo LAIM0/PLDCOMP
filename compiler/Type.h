@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-typedef enum {_INT = 1, _CHAR} Type;
+typedef enum {_INT = 1, _CHAR, _VOID} Type;
 typedef enum {x86, arm} TypeAsm;
 
 class TypeClass {
