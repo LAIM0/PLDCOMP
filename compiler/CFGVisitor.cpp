@@ -42,7 +42,8 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     currentCFG->current_bb = bbfunc;
 
     // Handle params memory allocation
-    if(ctx->parameter().size() > 6){
+    if (ctx->parameter().size() > 6)
+    {
         cerr << "Sorry, we do not handle functions with more than 6 parameters" << endl;
         exit(1);
     }
@@ -80,7 +81,8 @@ antlrcpp::Any CFGVisitor::visitFunction_call(ifccParser::Function_callContext *c
     }
     int i = 0;
     int nb_params = currentCFG->get_function_params(function);
-    if(nb_params != ctx->expression().size()){
+    if (nb_params != ctx->expression().size())
+    {
         cerr << "Not enough parameters for the function " << function << endl;
         exit(1);
     }
@@ -100,7 +102,7 @@ antlrcpp::Any CFGVisitor::visitReturn_stmt(ifccParser::Return_stmtContext *ctx)
 {
     visit(ctx->expression());
     currentCFG->has_return = true;
-    Instr_jump * instr_return = new Instr_jump(currentCFG->current_bb, currentCFG->current_bb->exit_true);
+    Instr_jump *instr_return = new Instr_jump(currentCFG->current_bb, currentCFG->current_bb->exit_true);
     currentCFG->current_bb->add_IRInstr(instr_return);
     return 0;
 }
@@ -108,56 +110,65 @@ antlrcpp::Any CFGVisitor::visitReturn_stmt(ifccParser::Return_stmtContext *ctx)
 antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
 {
     // Case of simple declaration TYPE VAR ";"
-    if (ctx->VAR() != nullptr)
+    if (ctx->VAR().size() > 0)
     {
-        // If the variable has already been declared
-        if (currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] != 0)
+        for (auto var : ctx->VAR())
         {
-            std::cerr << "Variable " << ctx->VAR()->getText() << " has already been declared" << std::endl;
-            exit(1);
+
+            // If the variable has already been declared
+            if (currentCFG->current_bb->SymbolType[var->getText()] != 0)
+            {
+                std::cerr << "Variable " << var->getText() << " has already been declared" << std::endl;
+                exit(1);
+            }
+            // Otherwise, we had to the symbol table with its type
+            currentCFG->current_bb->SymbolType[var->getText()] = TypeClass::getType(ctx->TYPE()->getText());
         }
-        // Otherwise, we had to the symbol table with its type
-        currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] = TypeClass::getType(ctx->TYPE()->getText());
     }
     // Case of declaration with affectation
     else
     {
-        // If the variable has already been declared
-        if (currentCFG->current_bb->SymbolType[ctx->affectation()->VAR()->getText()] != 0)
+        for (auto var : ctx->affectation()->VAR())
         {
-            std::cerr << "Variable " << ctx->affectation()->VAR()->getText() << " has already been declared" << std::endl;
-            exit(1);
+
+            // If the variable has already been declared
+            if (currentCFG->current_bb->SymbolType[var->getText()] != 0)
+            {
+                std::cerr << "Variable " << var->getText() << " has already been declared" << std::endl;
+                exit(1);
+            }
+            // Otherwise, we had to the symbol table with its type
+            currentCFG->current_bb->SymbolType[var->getText()] = TypeClass::getType(ctx->TYPE()->getText());
         }
-        // Otherwise, we had to the symbol table with its type
-        currentCFG->current_bb->SymbolType[ctx->affectation()->VAR()->getText()] = TypeClass::getType(ctx->TYPE()->getText());
         visitChildren(ctx);
     }
     return 0;
 }
 antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 {
-    // var which we affect the value
-    std::string var = ctx->VAR()->getText();
-    if (currentCFG->current_bb->SymbolType[ctx->VAR()->getText()] == 0)
-    {
-        std::cerr << "Variable " << ctx->VAR()->getText() << " has not been declared" << std::endl;
-        exit(1);
-    }
-
     // visit expression and store the result in our main register !reg
     visit(ctx->expression());
+
+    // variables which we affect the value
+    for (auto var : ctx->VAR())
+    {
+        if (currentCFG->current_bb->SymbolType[var->getText()] == 0)
+        {
+            std::cerr << "Variable " << var->getText() << " has not been declared" << std::endl;
+            exit(1);
+        }
+        Type var_type = currentCFG->current_bb->SymbolType[var->getText()];
+
+        // Copy the value of the main register !reg into the variable memory cell
+        Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, "!reg", var->getText());
+        currentCFG->current_bb->add_IRInstr(instr);
+    }
 
     // Type expression_type = currentCFG->current_bb->instrs.back()->getType();
     // if(expression_type != currentCFG->get_var_type(var)){
     //     std::cerr << "Wrong type for " << var << endl;
     //     exit(1);
     // }
-
-    Type var_type = currentCFG->current_bb->SymbolType[var];
-
-    // Copy the value of the main register !reg into the variable memory cell
-    Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, "!reg", var);
-    currentCFG->current_bb->add_IRInstr(instr);
 
     return 0;
 }
@@ -370,7 +381,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     if (ctx->unaryOperator()->MINUS() != nullptr)
     {
         // Visit the expression and store the result in the main register !reg
-        visit(ctx->unaryOperator()->VAR());
+        visit(ctx->unaryOperator()->expression());
 
         // NEG operator on the main register !reg
         Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
@@ -391,7 +402,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
         currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
-        visit(ctx->unaryOperator()->VAR());
+        visit(ctx->unaryOperator()->expression());
         Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_add);
     }
@@ -402,7 +413,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
         currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
-        visit(ctx->unaryOperator()->VAR());
+        visit(ctx->unaryOperator()->expression());
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
@@ -507,15 +518,18 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
     currentCFG->current_bb->add_IRInstr(instr_comp);
     string test_var = currentCFG->current_bb->create_new_tempvar(_INT);
 
-    BasicBlock * bbepilogue = currentCFG->current_bb->exit_true; 
-    BasicBlock * thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock * elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock * endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock *bbepilogue = currentCFG->current_bb->exit_true;
+    BasicBlock *thenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock *elseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    BasicBlock *endIfBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     currentCFG->add_bb(thenBb);
     currentCFG->add_bb(elseBb);
     thenBb->SymbolType = currentCFG->current_bb->SymbolType;
+    thenBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
     elseBb->SymbolType = currentCFG->current_bb->SymbolType;
+    elseBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
     endIfBb->SymbolType = currentCFG->current_bb->SymbolType;
+    endIfBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
 
     BasicBlock *testBb = currentCFG->current_bb;
 
@@ -550,6 +564,10 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
 
             BasicBlock *elseIfThenBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
             BasicBlock *elseIfElseBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+            elseIfThenBb->SymbolType = currentCFG->current_bb->SymbolType;
+            elseIfElseBb->SymbolType = currentCFG->current_bb->SymbolType;
+            elseIfThenBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
+            elseIfElseBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
             currentCFG->add_bb(elseIfThenBb);
             currentCFG->add_bb(elseIfElseBb);
 
@@ -589,9 +607,11 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
 
 antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
 {
-    BasicBlock * bbepilogue = currentCFG->current_bb->exit_true; 
+    BasicBlock *bbepilogue = currentCFG->current_bb->exit_true;
     // Visit test expression
     BasicBlock *testBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
+    testBb->SymbolType = currentCFG->current_bb->SymbolType;
+    testBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
     currentCFG->current_bb = testBb;
     currentCFG->add_bb(testBb);
 
@@ -610,7 +630,9 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     BasicBlock *whileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     BasicBlock *endWhileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     whileBb->SymbolType = currentCFG->current_bb->SymbolType;
+    whileBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
     endWhileBb->SymbolType = currentCFG->current_bb->SymbolType;
+    endWhileBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
     currentCFG->add_bb(whileBb);
     currentCFG->add_bb(endWhileBb);
 
