@@ -13,10 +13,6 @@ void Instr_or::gen_asm(ostream &o)
         {
             var1 = "w0";
         }
-        else if (destination == "!regd")
-        {
-            var1 = "w1";
-        }
         else
         {
             o << "\tldr w2, [sp, #" + to_string(this->bb->cfg->get_var_index(destination)) << "]\t;ADD INSTR\n";
@@ -27,10 +23,6 @@ void Instr_or::gen_asm(ostream &o)
         {
             var2 = "w0";
         }
-        else if (source == "!regd")
-        {
-            var2 = "w1";
-        }
         else
         {
             o << "\tldr w3, [sp, #" + to_string(this->bb->cfg->get_var_index(source)) << "]\t;ADD INSTR\n";
@@ -38,7 +30,7 @@ void Instr_or::gen_asm(ostream &o)
         }
 
         o << "\torr " << var1 << ", " << var1 << ", " << var2 << "\t;ADD INSTR\n";
-        // o << "\tmov w0, " << var1 << "\t;ADD INSTR\n";   Normalement on en a pas jamais besoin de cette ligne avec un codeGenoptimisé
+        // o << "\tmov x0, " << var1 << "\t;ADD INSTR\n";   Normalement on en a pas jamais besoin de cette ligne avec un codeGenoptimisé
     }
     else if (target == "x86")
     {

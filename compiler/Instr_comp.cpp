@@ -13,10 +13,6 @@ void Instr_comp::gen_asm(ostream &o)
         {
             var1 = "w0";
         }
-        else if (comp_left == "!regd")
-        {
-            var1 = "w1";
-        }
         else
         {
             o << "\tldr w2, [sp, #" + to_string(this->bb->cfg->get_var_index(comp_left)) << "]\t;COMP INSTR\n";
@@ -25,10 +21,6 @@ void Instr_comp::gen_asm(ostream &o)
         if (comp_right == "!reg")
         {
             var2 = "w0";
-        }
-        else if (comp_right == "!regd")
-        {
-            var2 = "w1";
         }
         else
         {
@@ -65,7 +57,7 @@ void Instr_comp::gen_asm(ostream &o)
         o << "\tsubs	" << var1 << ", " << var1 << ", " << var2 << "\t;COMP INSTR\n";
         o << "\tcset	" << var1 << ", " << operateur << "\t;COMP INSTR\n";
         o << "\tand	" << var1 << ", " << var1 << ", #0x1\t;COMP INSTR\n";
-        o << "\tmov	w0, " << var1 << "\t;COMP INSTR\n";
+        o << "\tmov	x0, " << var1 << "\t;COMP INSTR\n";
     }
     else if (target == "x86")
     {

@@ -79,9 +79,10 @@ void CFG::assign_var_index()
         index -= 4;
     }
 }
-void CFG::add_to_symbol_table(string name, Type t)
+void CFG::add_to_symbol_table(string name, Type t, int pointerLevel)
 {
     SymbolType[name] = t;
+    SymbolPointerLevel[name] = pointerLevel;
 }
 void CFG::add_to_function_table(string name, Type t)
 {

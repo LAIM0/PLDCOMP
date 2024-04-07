@@ -1,5 +1,5 @@
 
-// Generated from ifcc.g4 by ANTLR 4.7.2
+// Generated from ifcc.g4 by ANTLR 4.9.2
 
 #pragma once
 
@@ -13,15 +13,16 @@ class  ifccLexer : public antlr4::Lexer {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    RIGHTSHIFT = 8, LEFTSHIFT = 9, MULTIPLY = 10, DIVIDE = 11, MOD = 12, 
-    DECREMENT = 13, MINUS = 14, INCREMENT = 15, PLUS = 16, LESSEQUAL = 17, 
-    LESS = 18, GREATEREQUAL = 19, GREATER = 20, NOTEQUAL = 21, EQUAL = 22, 
-    BAND = 23, BXOR = 24, BOR = 25, AND = 26, OR = 27, EGAL = 28, NOT = 29, 
-    BNOT = 30, IF = 31, ELSEIF = 32, ELSE = 33, RETURN = 34, TYPE = 35, 
-    NUMBER = 36, CHAR = 37, COMMENT = 38, DIRECTIVE = 39, WS = 40, VAR = 41
+    T__7 = 8, T__8 = 9, DEREFERENCE = 10, ADDRESSOF = 11, RIGHTSHIFT = 12, 
+    LEFTSHIFT = 13, MULTIPLY = 14, DIVIDE = 15, MOD = 16, DECREMENT = 17, 
+    MINUS = 18, INCREMENT = 19, PLUS = 20, LESSEQUAL = 21, LESS = 22, GREATEREQUAL = 23, 
+    GREATER = 24, NOTEQUAL = 25, EQUAL = 26, BAND = 27, BXOR = 28, BOR = 29, 
+    AND = 30, OR = 31, EGAL = 32, NOT = 33, BNOT = 34, IF = 35, ELSEIF = 36, 
+    ELSE = 37, RETURN = 38, TYPE = 39, NUMBER = 40, CHAR = 41, COMMENT = 42, 
+    DIRECTIVE = 43, WS = 44, VAR = 45
   };
 
-  ifccLexer(antlr4::CharStream *input);
+  explicit ifccLexer(antlr4::CharStream *input);
   ~ifccLexer();
 
   virtual std::string getGrammarFileName() const override;

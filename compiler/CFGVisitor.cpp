@@ -30,7 +30,7 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
         currentCFG = cfg;
     }
 
-    currentCFG->add_to_function_table(function_name, TypeClass::getType(ctx->TYPE()->getText()));
+    currentCFG->add_to_function_table(function_name, TypeClass::getType(ctx->type()->TYPE()->getText()));
     BasicBlock *bbepilogue = new BasicBlock(currentCFG, "epilogue");
     BasicBlock *bbfunc = new BasicBlock(currentCFG, function_name);
     bbepilogue->exit_true = nullptr;
@@ -42,9 +42,9 @@ antlrcpp::Any CFGVisitor::visitFunction_declaration(ifccParser::Function_declara
     int i = 0;
     for (auto param : ctx->parameter())
     {
-        currentCFG->add_to_symbol_table(param->VAR()->getText(), TypeClass::getType(param->TYPE()->getText()));
+        currentCFG->add_to_symbol_table(param->VAR()->getText(), TypeClass::getType(param->type()->TYPE()->getText()), param->type()->DEREFERENCE().size());
         std::string reg = "!reg" + to_string(i);
-        Instr_copy *instr_copy = new Instr_copy(currentCFG->current_bb, TypeClass::getType(param->TYPE()->getText()), reg, param->VAR()->getText());
+        Instr_copy *instr_copy = new Instr_copy(currentCFG->current_bb, TypeClass::getType(param->type()->TYPE()->getText()), reg, param->VAR()->getText());
         currentCFG->current_bb->add_IRInstr(instr_copy);
         i++;
     }
@@ -85,8 +85,79 @@ antlrcpp::Any CFGVisitor::visitReturn_stmt(ifccParser::Return_stmtContext *ctx)
     return 0;
 }
 
+std::string CFGVisitor::extractVarName(ifccParser::Lvalue_expressionContext *ctx)
+{
+    // Exemple générique pour tenter d'accéder aux enfants ou aux tokens spécifiques
+    for (auto child : ctx->children)
+    {
+        // Vérifier si l'enfant est un nœud VAR et agir en conséquence
+        if (antlr4::tree::TerminalNode *tn = dynamic_cast<antlr4::tree::TerminalNode *>(child))
+        {
+            if (tn->getSymbol()->getType() == ifccParser::VAR)
+            {
+                return tn->getText();
+            }
+        }
+        // Si l'enfant est un autre lvalue_expression, le visiter récursivement
+        else if (auto lvalueChild = dynamic_cast<ifccParser::Lvalue_expressionContext *>(child))
+        {
+            std::string name = extractVarName(lvalueChild);
+            if (!name.empty())
+                return name;
+        }
+    }
+    return "";
+}
+
+antlrcpp::Any CFGVisitor::visitLvalueExp(ifccParser::LvalueExpContext *ctx)
+{
+    visit(ctx->lvalue_expression());
+    return 0;
+}
+
+antlrcpp::Any CFGVisitor::visitPar(ifccParser::ParContext *ctx)
+{
+    visit(ctx->expression());
+    return 0;
+}
+antlrcpp::Any CFGVisitor::visitParLvalue(ifccParser::ParLvalueContext *ctx)
+{
+    visit(ctx->lvalue_expression());
+    return 0;
+}
+
+antlrcpp::Any CFGVisitor::visitDereferenceLvalue(ifccParser::DereferenceLvalueContext *ctx)
+{
+    if (declaration)
+    {
+        declaration = false;
+        std::cerr << "Erreur de déclaration d'une valeur déréférencée" << std::endl;
+        exit(1);
+    }
+    return 0;
+}
+antlrcpp::Any CFGVisitor::visitAddressofLvalue(ifccParser::AddressofLvalueContext *ctx)
+{
+    if (declaration)
+    {
+        declaration = false;
+        std::cerr << "Erreur de déclaration d'une adresse" << std::endl;
+        exit(1);
+    }
+    return 0;
+}
+antlrcpp::Any CFGVisitor::visitArrayAccessExp(ifccParser::ArrayAccessExpContext *ctx)
+{
+    return 0;
+}
+antlrcpp::Any CFGVisitor::visitArrayAccessLvalue(ifccParser::ArrayAccessLvalueContext *ctx)
+{
+    return 0;
+}
+
 antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
 {
+    /*
     // Case of simple declaration TYPE VAR ";"
     if (ctx->VAR() != nullptr)
     {
@@ -97,7 +168,7 @@ antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
             exit(1);
         }
         // Otherwise, we had to the symbol table with its type
-        currentCFG->add_to_symbol_table(ctx->VAR()->getText(), TypeClass::getType(ctx->TYPE()->getText()));
+        currentCFG->add_to_symbol_table(ctx->VAR()->getText(), TypeClass::getType(ctx->type()->TYPE()->getText()), ctx->type()->DEREFERENCE().size());
     }
     // Case of declaration with affectation
     else
@@ -109,21 +180,53 @@ antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
             exit(1);
         }
         // Otherwise, we had to the symbol table with its type
-        currentCFG->add_to_symbol_table(ctx->affectation()->VAR()->getText(), TypeClass::getType(ctx->TYPE()->getText()));
+        currentCFG->add_to_symbol_table(ctx->affectation()->getText(), TypeClass::getType(ctx->TYPE()->getText()), ctx->affectation()->DEREFERENCE().size());
         visitChildren(ctx);
+    }
+    return 0;
+    */
+
+    std::string varName;
+    int pointerLevel = 0; // Niveau de pointeur, déterminé par le nombre de '*'
+    Type varType;
+
+    // Traitement commun pour extraire le nom de la variable et le niveau de pointeur
+    if (ctx->VAR() != nullptr)
+    {
+        varName = ctx->VAR()->getText();
+        pointerLevel = ctx->type()->DEREFERENCE().size();
+        varType = TypeClass::getType(ctx->type()->TYPE()->getText());
+    }
+    else
+    {
+        declaration = true;
+        varName = extractVarName(ctx->affectation()->lvalue_expression());
+        pointerLevel = ctx->type()->DEREFERENCE().size();
+        varType = TypeClass::getType(ctx->type()->TYPE()->getText());
+    }
+
+    // Vérification si la variable a déjà été déclarée
+    if (currentCFG->get_var_type(varName) != 0)
+    {
+        std::cerr << "Variable " << varName << " has already been declared" << std::endl;
+        exit(1);
+    }
+
+    // Ajout de la variable à la table des symboles avec son type
+    currentCFG->add_to_symbol_table(varName, varType, pointerLevel);
+
+    // Traitement spécifique pour les déclarations avec affectation
+    if (ctx->affectation() != nullptr)
+    {
+        // Traiter l'affectation ici si nécessaire, en tenant compte du type et du niveau de pointeur
+        visitAffectation(ctx->affectation());
     }
     return 0;
 }
 antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 {
     // var which we affect the value
-    std::string var = ctx->VAR()->getText();
-    if (currentCFG->get_var_type(ctx->VAR()->getText()) == 0)
-    {
-        std::cerr << "Variable " << ctx->VAR()->getText() << " has not been declared" << std::endl;
-        exit(1);
-    }
-
+    string variable_in_to_affect = extractVarName(ctx->lvalue_expression());
 
     // visit expression and store the result in our main register !reg
     visit(ctx->expression());
@@ -134,11 +237,45 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
     //     exit(1);
     // }
 
-    Type var_type = currentCFG->get_var_type(var);
+    Type var_type = currentCFG->get_var_type(variable_in_to_affect);
 
-    // Copy the value of the main register !reg into the variable memory cell
-    Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, "!reg", var);
-    currentCFG->current_bb->add_IRInstr(instr);
+    int pointerLevel = 0; // ctx->DEREFERENCE().size();
+
+    if (pointerLevel == 0)
+    {
+        // Copy the value of the main register !reg into the variable memory cell
+        Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, "!reg", variable_in_to_affect);
+        currentCFG->current_bb->add_IRInstr(instr);
+    }
+    else
+    {
+
+        string tmp_reg = currentCFG->create_new_tempvar(_INT);
+        Instr_ldaddr *instr_load_adress = new Instr_ldaddr(currentCFG->current_bb, var_type, tmp_reg, variable_in_to_affect);
+        currentCFG->current_bb->add_IRInstr(instr_load_adress);
+
+        for (int i = 0; i < pointerLevel - 1; i++)
+        {
+            Instr_rmem *instr_read_mem = new Instr_rmem(currentCFG->current_bb, var_type, tmp_reg, tmp_reg);
+            currentCFG->current_bb->add_IRInstr(instr_read_mem);
+        }
+        Instr_wmem *instr_write = new Instr_wmem(currentCFG->current_bb, var_type, "!reg", tmp_reg);
+        currentCFG->current_bb->add_IRInstr(instr_write);
+    }
+
+    /*
+
+        1. Evaluer 'expression' et stocker le résultat dans expr_result
+        2. Si aucun DEREFERENCE n'est présent :
+            2.1. ldaddr var_address, VAR  // Charger l'adresse directe de VAR
+        3. Si DEREFERENCE est présent (pour N déréférencements) :
+            3.1. ldaddr temp_reg, VAR    // Charger l'adresse de VAR dans temp_reg
+            3.2. Pour chaque DEREFERENCE (à l'exception du dernier) :
+                3.2.1. rmem temp_reg, [temp_reg]  // Déréférencer et charger l'adresse contenue dans temp_reg
+            3.3. var_address = temp_reg  // Le dernier registre temporaire contient l'adresse finale pour l'affectation
+        4. wmem [var_address], expr_result  // Écrire le résultat de 'expression' à l'adresse déterminée
+
+    */
 
     return 0;
 }
@@ -161,8 +298,9 @@ antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx)
     return 0;
 }
 
-antlrcpp::Any CFGVisitor::visitVar(ifccParser::VarContext *ctx)
+antlrcpp::Any CFGVisitor::visitVarLvalue(ifccParser::VarLvalueContext *ctx)
 {
+
     // if the variable has not been declared before
     if (currentCFG->get_var_type(ctx->VAR()->getText()) == 0)
     {
@@ -351,7 +489,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     if (ctx->unaryOperator()->MINUS() != nullptr)
     {
         // Visit the expression and store the result in the main register !reg
-        visit(ctx->unaryOperator()->VAR());
+        visit(ctx->unaryOperator()->lvalue_expression());
 
         // NEG operator on the main register !reg
         Instr_neg *instr_neg = new Instr_neg(currentCFG->current_bb, _INT, "!reg");
@@ -360,7 +498,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     else if (ctx->unaryOperator()->NOT() != nullptr)
     {
         // Visit the expression and store the result in the main register !reg
-        visit(ctx->unaryOperator()->expression());
+        visit(ctx->unaryOperator()->lvalue_expression());
         // NOT operator on the main register !reg
         Instr_not *instr_not = new Instr_not(currentCFG->current_bb, _INT, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_not);
@@ -372,7 +510,7 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
         currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
-        visit(ctx->unaryOperator()->VAR());
+        visit(ctx->unaryOperator()->lvalue_expression());
         Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_add);
     }
@@ -383,10 +521,23 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
         currentCFG->current_bb->add_IRInstr(instr_ldconst);
         Instr_copy *instr_tmp_un_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", tmp_un);
         currentCFG->current_bb->add_IRInstr(instr_tmp_un_copy);
-        visit(ctx->unaryOperator()->VAR());
+        visit(ctx->unaryOperator()->lvalue_expression());
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, tmp_un, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
+    /*
+    else if (ctx->unaryOperator()->ADDRESSOF() != nullptr)
+    {
+        string varName = visit(ctx->unaryOperator()->lvalue_expression());
+        Instr_ldaddr *instr_load_adress = new Instr_ldaddr(currentCFG->current_bb, _INT, "!reg", varName);
+        currentCFG->current_bb->add_IRInstr(instr_load_adress);
+    }
+    else if (ctx->unaryOperator()->DEREFERENCE() != nullptr)
+    {
+        string varName = visit(ctx->unaryOperator()->lvalue_expression());
+        Instr_rmem *instr_read_mem = new Instr_rmem(currentCFG->current_bb, _INT, varName, "!reg");
+        currentCFG->current_bb->add_IRInstr(instr_read_mem);
+    }*/
     return 0;
 }
 
@@ -604,7 +755,6 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     BasicBlock *endWhileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     currentCFG->add_bb(whileBb);
     currentCFG->add_bb(endWhileBb);
-
 
     testBb->exit_true = whileBb;
     testBb->exit_false = endWhileBb;

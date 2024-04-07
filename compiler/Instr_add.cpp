@@ -2,7 +2,6 @@
 #include "BasicBlock.h"
 using namespace std;
 
-
 void Instr_add::gen_asm(ostream &o)
 {
     string target = this->bb->cfg->target_architecture;
@@ -14,10 +13,6 @@ void Instr_add::gen_asm(ostream &o)
         {
             var1 = "w0";
         }
-        else if (destination == "!regd")
-        {
-            var1 = "w1";
-        }
         else
         {
             o << "\tldr w2, [sp, #" + to_string(this->bb->cfg->get_var_index(destination)) << "]\t;ADD INSTR\n";
@@ -27,10 +22,6 @@ void Instr_add::gen_asm(ostream &o)
         if (added == "!reg")
         {
             var2 = "w0";
-        }
-        else if (added == "!regd")
-        {
-            var2 = "w1";
         }
         else
         {

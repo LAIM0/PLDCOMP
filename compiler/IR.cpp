@@ -26,10 +26,10 @@ string IRInstr::getMemory_x86(string var)
     return "-" + to_string(this->bb->cfg->get_var_index(var)) + "(%rbp)";
 }
 
-Type IRInstr::getType(){
+Type IRInstr::getType()
+{
     return t;
 }
-
 
 string IRInstr::getRegister_arm(string register_key)
 {

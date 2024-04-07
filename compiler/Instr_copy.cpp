@@ -34,15 +34,15 @@ void Instr_copy::gen_asm(ostream &o)
 
         if (registreDest && registreSource)
         {
-            o << "\tmov " << var2 << ", " << var1 << "\t;COPY INSTR\n";
+            o << "\tmov " << var2 << ", " << var1 << "\t;COPY INSTR" << source << "->" << destination << "\n";
         }
         else if (registreSource)
         {
-            o << "\tstr " << var1 << ", " << var2 << "\t;COPY INSTR\n";
+            o << "\tstr " << var1 << ", " << var2 << "\t;COPY INSTR" << source << "->" << destination << "\n";
         }
         else if (registreDest)
         {
-            o << "\tldr " << var2 << ", " << var1 << "\t;COPY INSTR\n";
+            o << "\tldr " << var2 << ", " << var1 << "\t;COPY INSTR" << source << "->" << destination << "\n";
         }
     }
     else if (target == "x86")

@@ -36,7 +36,10 @@ OBJECTS=build/ifccBaseVisitor.o \
 	build/Instr_xor.o  \
 	build/Instr_comp.o \
 	build/Instr_call.o \
-	build/Instr_jump.o
+	build/Instr_jump.o \
+	build/Instr_ldaddr.o \
+	build/Instr_rmem.o \
+	build/Instr_wmem.o 
 
 ifcc: $(OBJECTS)
 	@mkdir -p build

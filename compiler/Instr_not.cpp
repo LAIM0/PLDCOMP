@@ -13,10 +13,6 @@ void Instr_not::gen_asm(ostream &o)
         {
             var = "w0";
         }
-        else if (source == "!regd")
-        {
-            var = "w1";
-        }
         o << "\tsubs " << var << ", " << var << ", #0\t; NOT INSTR\n";
         o << "\tcset " << var << ", eq\t; NOT INSTR\n";
         o << "\tand " << var << ", " << var << ", #0x1\t; NOT INSTR\n";

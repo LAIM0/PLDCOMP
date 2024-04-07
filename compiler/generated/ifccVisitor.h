@@ -1,5 +1,5 @@
 
-// Generated from ifcc.g4 by ANTLR 4.7.2
+// Generated from ifcc.g4 by ANTLR 4.9.2
 
 #pragma once
 
@@ -37,7 +37,7 @@ public:
 
     virtual antlrcpp::Any visitBor(ifccParser::BorContext *context) = 0;
 
-    virtual antlrcpp::Any visitVar(ifccParser::VarContext *context) = 0;
+    virtual antlrcpp::Any visitLvalueExp(ifccParser::LvalueExpContext *context) = 0;
 
     virtual antlrcpp::Any visitUnary(ifccParser::UnaryContext *context) = 0;
 
@@ -53,7 +53,19 @@ public:
 
     virtual antlrcpp::Any visitBand(ifccParser::BandContext *context) = 0;
 
+    virtual antlrcpp::Any visitArrayAccessExp(ifccParser::ArrayAccessExpContext *context) = 0;
+
     virtual antlrcpp::Any visitEquality(ifccParser::EqualityContext *context) = 0;
+
+    virtual antlrcpp::Any visitArrayAccessLvalue(ifccParser::ArrayAccessLvalueContext *context) = 0;
+
+    virtual antlrcpp::Any visitAddressofLvalue(ifccParser::AddressofLvalueContext *context) = 0;
+
+    virtual antlrcpp::Any visitParLvalue(ifccParser::ParLvalueContext *context) = 0;
+
+    virtual antlrcpp::Any visitDereferenceLvalue(ifccParser::DereferenceLvalueContext *context) = 0;
+
+    virtual antlrcpp::Any visitVarLvalue(ifccParser::VarLvalueContext *context) = 0;
 
     virtual antlrcpp::Any visitEqualityOperator(ifccParser::EqualityOperatorContext *context) = 0;
 
@@ -94,6 +106,8 @@ public:
     virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *context) = 0;
 
     virtual antlrcpp::Any visitLoop(ifccParser::LoopContext *context) = 0;
+
+    virtual antlrcpp::Any visitType(ifccParser::TypeContext *context) = 0;
 
     virtual antlrcpp::Any visitConstante(ifccParser::ConstanteContext *context) = 0;
 
