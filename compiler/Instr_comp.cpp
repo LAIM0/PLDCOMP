@@ -13,10 +13,6 @@ void Instr_comp::gen_asm(ostream &o)
         {
             var1 = "w0";
         }
-        else if (comp_left == "!regd")
-        {
-            var1 = "w1";
-        }
         else
         {
             o << "\tldr w2, [sp, #" + to_string(this->bb->cfg->get_var_index(comp_left)) << "]\t;COMP INSTR\n";
@@ -26,46 +22,37 @@ void Instr_comp::gen_asm(ostream &o)
         {
             var2 = "w0";
         }
-        else if (comp_right == "!regd")
-        {
-            var2 = "w1";
-        }
         else
         {
             o << "\tldr w3, [sp, #" + to_string(this->bb->cfg->get_var_index(comp_right)) << "]\t;COMP INSTR\n";
             var2 = "w3";
         }
 
-        string operateur;
-        string var;
+        // Génération de la comparaison
+        o << "\tcmp\t" << var1 << ", " << var2 << "\t;COMP INSTR\n";
 
+        // Utilisation directe des flags de condition pour le branchement ou la mise à jour d'un registre
         switch (op)
         {
         case Equal:
-            operateur = "eq";
+            o << "\tcset\tw0, eq\t;COMP INSTR\n";
             break;
         case NotEqual:
-            operateur = "ne";
-
+            o << "\tcset\tw0, ne\t;COMP INSTR\n";
             break;
         case LessThan:
-            operateur = "lt";
+            o << "\tcset\tw0, lt\t;COMP INSTR\n";
             break;
         case LessThanOrEqual:
-            operateur = "le";
+            o << "\tcset\tw0, le\t;COMP INSTR\n";
             break;
         case GreaterThan:
-            operateur = "gt";
+            o << "\tcset\tw0, gt\t;COMP INSTR\n";
             break;
         case GreaterThanOrEqual:
-            operateur = "ge";
+            o << "\tcset\tw0, ge\t;COMP INSTR\n";
             break;
         }
-
-        o << "\tsubs	" << var1 << ", " << var1 << ", " << var2 << "\t;COMP INSTR\n";
-        o << "\tcset	" << var1 << ", " << operateur << "\t;COMP INSTR\n";
-        o << "\tand	" << var1 << ", " << var1 << ", #0x1\t;COMP INSTR\n";
-        o << "\tmov	w0, " << var1 << "\t;COMP INSTR\n";
     }
     else if (target == "x86")
     {

@@ -507,7 +507,7 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
 {
     // Visit test expression
     string cmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
-    Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
+    Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "0");
     currentCFG->current_bb->add_IRInstr(instr_ldconst);
     Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
     currentCFG->current_bb->add_IRInstr(instr_cmp_var_copy);
@@ -538,7 +538,7 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
     testBb->exit_false = elseBb;
     elseBb->exit_true = endIfBb;
 
-    Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
+    Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "ne");
     currentCFG->current_bb->add_IRInstr(instr_jump_true);
     Instr_jump *instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
     currentCFG->current_bb->add_IRInstr(instr_jump_false);
@@ -576,7 +576,7 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
             elseIfTestBb->exit_true = elseIfThenBb;
             elseIfTestBb->exit_false = elseIfElseBb;
 
-            Instr_jump *instr_elseif_jump_true = new Instr_jump(elseIfTestBb, elseIfTestBb->exit_true, "e");
+            Instr_jump *instr_elseif_jump_true = new Instr_jump(elseIfTestBb, elseIfTestBb->exit_true, "ne");
             currentCFG->current_bb->add_IRInstr(instr_elseif_jump_true);
             Instr_jump *instr_elseif_jump_false = new Instr_jump(elseIfTestBb, elseIfTestBb->exit_false);
             currentCFG->current_bb->add_IRInstr(instr_elseif_jump_false);
@@ -616,7 +616,7 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     currentCFG->add_bb(testBb);
 
     string cmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
-    Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
+    Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "0");
     currentCFG->current_bb->add_IRInstr(instr_ldconst);
     Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
     currentCFG->current_bb->add_IRInstr(instr_cmp_var_copy);
@@ -640,7 +640,7 @@ antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
     whileBb->exit_true = bbepilogue;
     testBb->exit_false = endWhileBb;
 
-    Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
+    Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "ne");
     currentCFG->current_bb->add_IRInstr(instr_jump_true);
     Instr_jump *instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
     currentCFG->current_bb->add_IRInstr(instr_jump_false);

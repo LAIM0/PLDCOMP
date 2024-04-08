@@ -12,9 +12,9 @@ void Instr_jump::gen_asm(ostream &o)
         {
             // Convertir la condition en suffixe ARM64. Exemple: "e" -> "EQ", "ne" -> "NE"
             string armConditionSuffix;
-            if (condition == "e")
+            if (condition == "ne")
                 armConditionSuffix = "eq";
-            else if (condition == "ne")
+            else if (condition == "e")
                 armConditionSuffix = "ne";
             // Ajouter d'autres conditions ?
 
