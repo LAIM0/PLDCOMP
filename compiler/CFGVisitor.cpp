@@ -284,6 +284,8 @@ antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
     }
     else if (ctx->multOperator()->MOD() != nullptr)
     {
+
+        // Mets de côté les varables (div et facteur)
         string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
         Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
@@ -291,9 +293,11 @@ antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
         Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_reg_copy);
 
+        // Fait une première division euclidienne
         Instr_div *instr_div = new Instr_div(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_div);
 
+        // Calcul du reste avec une multiplication et une soustraction
         Instr_mult *instr_mult = new Instr_mult(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_mult);
 
