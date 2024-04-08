@@ -3,6 +3,12 @@
 
 using namespace std;
 
+void CFGVisitor::setTargetFlag(string target_architecture)
+{
+    this->target_architecture = target_architecture;
+}
+
+
 antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 {
     for (auto function : ctx->function_declaration())
@@ -163,13 +169,6 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
         Instr_copy *instr = new Instr_copy(currentCFG->current_bb, var_type, "!reg", var->getText());
         currentCFG->current_bb->add_IRInstr(instr);
     }
-
-    // Type expression_type = currentCFG->current_bb->instrs.back()->getType();
-    // if(expression_type != currentCFG->get_var_type(var)){
-    //     std::cerr << "Wrong type for " << var << endl;
-    //     exit(1);
-    // }
-
     return 0;
 }
 
@@ -211,23 +210,37 @@ antlrcpp::Any CFGVisitor::visitVar(ifccParser::VarContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx)
 {
+    // Visit left expression
     visit(ctx->expression(0));
+
+    // Create a temporary variable for the left expression
     string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+    // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
+
+    // Visit right expression
     visit(ctx->expression(1));
+
     if (ctx->addOperator()->PLUS() != nullptr)
     {
+        // ADD operation with left temporary and main register !reg (i.e. is the right temporary variable)
         Instr_add *instr_add = new Instr_add(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_add);
     }
     else if (ctx->addOperator()->MINUS() != nullptr)
     {
+        // Create a temporary variable for the right expression
         string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+        // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
         Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+
+        // Copy the value in the left temporary variable memory into the main register !reg
         Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_reg_copy);
+
+        // SUB operation with right temporary and main register !reg (i.e. is the right temporary variable)
         Instr_sub *instr_sub = new Instr_sub(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_sub);
     }
@@ -236,23 +249,37 @@ antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitMult(ifccParser::MultContext *ctx)
 {
+    // Visit left expression
     visit(ctx->expression(0));
+
+    // Create a temporary variable for the left expression
     string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+    // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
+    
+    // Visit right expression
     visit(ctx->expression(1));
+
     if (ctx->multOperator()->MULTIPLY() != nullptr)
     {
+        // MULT operation with left temporary and main register !reg (i.e. is the right temporary variable)
         Instr_mult *instr_mult = new Instr_mult(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_mult);
     }
     else if (ctx->multOperator()->DIVIDE() != nullptr)
     {
+        // Create a temporary variable for the right expression
         string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+        // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
         Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
         currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+        
+        // Copy the value in the left temporary variable memory into the main register !reg
         Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_reg_copy);
+
+        // DIV operation with right temporary and main register !reg (i.e. is the right temporary variable)
         Instr_div *instr_div = new Instr_div(currentCFG->current_bb, _INT, right_tmp_var, "!reg");
         currentCFG->current_bb->add_IRInstr(instr_div);
     }
@@ -420,11 +447,6 @@ antlrcpp::Any CFGVisitor::visitUnary(ifccParser::UnaryContext *ctx)
     return 0;
 }
 
-void CFGVisitor::setTargetFlag(string target_architecture)
-{
-    this->target_architecture = target_architecture;
-}
-
 antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
 {
     // Visit left expression
@@ -438,18 +460,16 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
 
     // Visit right expression
     visit(ctx->expression(1));
+    // Create a temporary variable for the right expression
     string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+
+    // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+
+    // Copy the value of the left temporary variable in the main register !reg
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
     currentCFG->current_bb->add_IRInstr(instr_reg_copy);
-
-    /*
-    Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", "!regd");
-    currentCFG->current_bb->add_IRInstr(instr_reg_copy);
-    Instr_copy *instr_left_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
-    currentCFG->current_bb->add_IRInstr(instr_left_copy);
-    */
 
     if (ctx->relationalOperator()->GREATER() != nullptr)
     {
@@ -465,11 +485,13 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
     }
     else if (ctx->relationalOperator()->LESS() != nullptr)
     {
+        // COMP operation < with right temporary and main register !reg (i.e. is the right temporary variable)
         Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", right_tmp_var, Instr_comp::LessThan);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     else if (ctx->relationalOperator()->LESSEQUAL() != nullptr)
     {
+        // COMP operation <= with right temporary and main register !reg (i.e. is the right temporary variable)
         Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", right_tmp_var, Instr_comp::LessThanOrEqual);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
@@ -479,24 +501,37 @@ antlrcpp::Any CFGVisitor::visitRelational(ifccParser::RelationalContext *ctx)
 antlrcpp::Any CFGVisitor::visitEquality(ifccParser::EqualityContext *ctx)
 {
 
+    // Visit left expression
     visit(ctx->expression(0));
+
+    // Create a temporary variable for the left expression
     string left_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+    // Copy the value in the main register !reg (result of the visit of left expression) into left temporary variable memory
     Instr_copy *instr_left_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", left_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_left_tmp_copy);
+
+    // Visit right expression
     visit(ctx->expression(1));
+
+    // Create a temporary variable for the right expression
     string right_tmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
+    // Copy the value in the main register !reg (result of the visit of right expression) into right temporary variable memory
     Instr_copy *instr_right_tmp_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", right_tmp_var);
     currentCFG->current_bb->add_IRInstr(instr_right_tmp_copy);
+
+    // Copy the value of the left temporary variable in the main register !reg
     Instr_copy *instr_reg_copy = new Instr_copy(currentCFG->current_bb, _INT, left_tmp_var, "!reg");
     currentCFG->current_bb->add_IRInstr(instr_reg_copy);
 
     if (ctx->equalityOperator()->EQUAL() != nullptr)
     {
+        // COMP operation == with right temporary and main register !reg (i.e. is the right temporary variable)
         Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", right_tmp_var, Instr_comp::Equal);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
     else if (ctx->equalityOperator()->NOTEQUAL() != nullptr)
     {
+        // COMP operation != with right temporary and main register !reg (i.e. is the right temporary variable)
         Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", right_tmp_var, Instr_comp::NotEqual);
         currentCFG->current_bb->add_IRInstr(instr_comp);
     }
@@ -607,50 +642,68 @@ antlrcpp::Any CFGVisitor::visitCondition_bloc(ifccParser::Condition_blocContext 
 
 antlrcpp::Any CFGVisitor::visitLoop_bloc(ifccParser::Loop_blocContext *ctx)
 {
+    // Get the BB epilogue for the return
     BasicBlock *bbepilogue = currentCFG->current_bb->exit_true;
-    // Visit test expression
+
+    // Create a BB for the test of the while
     BasicBlock *testBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     testBb->SymbolType = currentCFG->current_bb->SymbolType;
     testBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
+
+    // Now testBB is the current_bb
     currentCFG->current_bb = testBb;
     currentCFG->add_bb(testBb);
 
+    // Create a comp variable with 0 to evaluate if the condition is false or not
     string cmp_var = currentCFG->current_bb->create_new_tempvar(_INT);
     Instr_ldconst *instr_ldconst = new Instr_ldconst(currentCFG->current_bb, _INT, "!reg", "1");
     currentCFG->current_bb->add_IRInstr(instr_ldconst);
     Instr_copy *instr_cmp_var_copy = new Instr_copy(currentCFG->current_bb, _INT, "!reg", cmp_var);
     currentCFG->current_bb->add_IRInstr(instr_cmp_var_copy);
-
+    
+    // Visit test expression
     visit(ctx->expression());
 
+    // We compare the result of our expression with 0
     Instr_comp *instr_comp = new Instr_comp(currentCFG->current_bb, _INT, "!reg", cmp_var, Instr_comp::Equal);
     currentCFG->current_bb->add_IRInstr(instr_comp);
     string test_var = currentCFG->current_bb->create_new_tempvar(_INT);
 
+    // BB for the content of the while
     BasicBlock *whileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
-    BasicBlock *endWhileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     whileBb->SymbolType = currentCFG->current_bb->SymbolType;
     whileBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
+    currentCFG->add_bb(whileBb);
+
+    // BB for at the end of the while
+    BasicBlock *endWhileBb = new BasicBlock(currentCFG, currentCFG->new_BB_name());
     endWhileBb->SymbolType = currentCFG->current_bb->SymbolType;
     endWhileBb->nextFreeSymbolIndex = currentCFG->current_bb->nextFreeSymbolIndex;
-    currentCFG->add_bb(whileBb);
     currentCFG->add_bb(endWhileBb);
 
     testBb->exit_true = whileBb;
-    whileBb->exit_true = bbepilogue;
     testBb->exit_false = endWhileBb;
 
+    // For the return
+    whileBb->exit_true = bbepilogue;
+
+    // If the expression is not equal to zero, we jump to the while
     Instr_jump *instr_jump_true = new Instr_jump(testBb, testBb->exit_true, "e");
     currentCFG->current_bb->add_IRInstr(instr_jump_true);
+
+    // Otherwhise we jump to the end of the While
     Instr_jump *instr_jump_false = new Instr_jump(testBb, testBb->exit_false);
     currentCFG->current_bb->add_IRInstr(instr_jump_false);
 
+    // We visit the content of the while
     currentCFG->current_bb = whileBb;
     visitChildren(ctx->bloc());
 
+    // At the end of the content of the while, we jump to the BB test to iterate
     Instr_jump *instr_jump_end_while = new Instr_jump(whileBb, testBb);
     currentCFG->current_bb->add_IRInstr(instr_jump_end_while);
 
+    // Now the currentBB is the end of the while
     endWhileBb->exit_true = bbepilogue;
     currentCFG->current_bb = endWhileBb;
     return 0;

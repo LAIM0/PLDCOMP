@@ -83,15 +83,9 @@ int main(int argc, const char **argv)
 
     std::map<std::string, int> symbols;
 
-    // VariableVisitor vv;
-    // vv.visit(tree);
-
     CFGVisitor cfg;
     cfg.setTargetFlag(target_architecture);
     cfg.visit(tree);
-    // Passer l'architecture cible au visiteur
-    //   v.setTargetArchitecture(target_architecture);
-    //   v.visit(tree);
 
     return 0;
 }

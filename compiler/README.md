@@ -1,34 +1,35 @@
-# C compiler with antlr4/c++
+# Compiler et exécuter le projet IFCC
 
-## Instructions
+Ce projet est un compilateur simple écrit en C++ utilisant ANTLR pour la génération de lexer et de parser. Le compilateur prend en charge les architectures x86 et ARM comme cibles de compilation.
 
-This minimal example shows how to build a basic C compiler using
-Antlr4 for C++. The only file the compiler can deal with is:
+## Prérequis
 
+Avant de compiler et d'exécuter ce projet, assurez-vous d'avoir les éléments suivants installés sur votre système :
+
+- ANTLR (version 4.x)
+- Un compilateur C++ (par exemple, g++)
+- GNU Make
+
+## Compilation
+
+1. Assurez-vous que le fichier `ifcc.g4` est présent dans le répertoire du projet.
+2. Utilisez Make pour compiler le projet et générer les fichiers né en exécutant la commande suivante :
+
+    ```bash
+    make
+    ```
+
+## Exécution
+
+Après avoir compilé le projet avec succès, vous pouvez exécuter le compilateur IFCC en utilisant la commande suivante :
+
+```bash
+./ifcc --target=<architecture> path/to/file.c
 ```
-int main() {
-   return N;
-}
+
+## Tests
+
+Pour exécuter les tests, il suffit d'utiliser la commande suivante : 
+```bash
+python3 ifcc-test.py --target=<architecture> path/to/file.c
 ```
-where `N` is a positive integer constant. 
-
-## Source Files
-- `ifcc.g4` contains the grammar in antlr4 format
-- `main.cpp` contains the C++ code to call the antlr4-generated parser
-  on the file name provided in the command line.
-- `CodeGenVisitor.h` produces the actual assembly-language output
-
-## Prerequisites
-  Before building your  compiler, you should install  antlr using your
-  distribution's  package manager,  or by  running the  provided shell
-  script:   `install-antlr.sh`. 
-    
-## Compilation scripts
-- `Makefile` contains  the actual build  logic. Please read  this file
-  and ask questions on parts you do not understand.
-  The  Makefile includes a .mk file that defines several variables 
-  (ANTLR, ANTLRJAR,  ANTLRINC and  ANTLRLIB) indicating the location 
-  of various parts of the Antlr suite. 
-  You can (should)  change  those values to suit your installation, either
-  by editing the  Makefile and/or adding another .mk file.
-
